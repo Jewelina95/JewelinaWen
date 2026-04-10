@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jewelina Wen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:#050608;color:#f5f0eb;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:#d4a853;text-decoration:none;transition:color .3s}
+a:hover{color:#f0d68a}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 32px;background:rgba(5,6,8,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,168,83,.1);transform:translateY(-100%);opacity:0;transition:transform .5s ease,opacity .5s ease}
+#nav.show{transform:translateY(0);opacity:1}
+.nv{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.nv-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#d4a853!important;letter-spacing:.04em}
+.nv-links{display:flex;gap:32px}
+.nv-links a{color:rgba(245,240,235,.6);font-size:.78rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;padding-bottom:3px;position:relative}
+.nv-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#d4a853;transition:width .35s ease}
+.nv-links a:hover::after,.nv-links a.on::after{width:100%}
+.nv-links a:hover,.nv-links a.on{color:#d4a853}
+
+/* ===== LANDING ===== */
+#landing{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;background:#030508}
+#landing-3d{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}
+#landing-3d canvas{display:block;width:100%!important;height:100%!important}
+
+#lt{position:absolute;bottom:10%;left:5%;z-index:10;display:flex;flex-direction:column;gap:4px;will-change:opacity}
+.lt-sub{font-size:.82rem;font-weight:300;letter-spacing:.28em;text-transform:uppercase;color:rgba(245,240,235,.5)}
+.lt-main{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:#d4a853;line-height:1.1;text-shadow:0 0 50px rgba(212,168,83,.12)}
+#scroll-cue{position:absolute;bottom:24px;right:32px;z-index:10;display:flex;align-items:center;gap:7px;color:rgba(245,240,235,.3);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.sa{animation:bob 2s ease-in-out infinite}
+
+/* ===== ABOUT ===== */
+#about{position:relative;min-height:100vh;overflow:hidden;background:#050608}
+/* Taiji background - animated rotation */
+.taiji-bg{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(90vw,700px);height:min(90vw,700px);
+  opacity:.12;z-index:1;
+  animation:taijiSpin 60s linear infinite;
+}
+.taiji-bg img{width:100%;height:100%;object-fit:contain}
+@keyframes taijiSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.ab-wrap{position:relative;z-index:5;display:flex;gap:44px;max-width:1160px;margin:0 auto;padding:120px 44px 44px;align-items:flex-start}
+.ab-photo{flex:0 0 250px;border-radius:10px;overflow:hidden;border:2px solid rgba(212,168,83,.22);box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.ab-photo img{width:250px;height:330px;object-fit:cover;display:block}
+.ab-text{flex:1;min-width:0}
+.ab-hi{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:400;line-height:1.3;margin-bottom:8px}
+.ab-hi .g{color:#d4a853}
+.ab-hi .cn{font-size:1.2rem;color:rgba(245,240,235,.6)}
+.pron{margin-bottom:18px;padding:7px 13px;background:rgba(212,168,83,.06);border-left:3px solid #d4a853;border-radius:0 6px 6px 0;font-size:.8rem;color:rgba(245,240,235,.6);font-family:'Space Grotesk',monospace}
+.bio p{margin-bottom:13px;font-size:.9rem;line-height:1.75;color:rgba(245,240,235,.65)}
+.bio strong{color:#f5f0eb;font-weight:500}
+.bio strong a{color:#f5f0eb;border-bottom:1px solid rgba(245,240,235,.2);transition:border-color .3s}
+.bio strong a:hover{color:#f0d68a;border-bottom-color:#f0d68a}
+.bio a{color:#7eb8da;transition:color .3s}
+.bio a:hover{color:#a8d4f0}
+
+/* Journey */
+.jn{position:relative;z-index:5;padding:44px;max-width:1160px;margin:0 auto}
+.jn h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:36px}
+.jn h2 span{font-size:.9rem;color:rgba(245,240,235,.35);font-style:italic}
+.tl{position:relative;display:flex;justify-content:space-between;padding:0 8px}
+.tl-line{position:absolute;top:10px;left:8px;right:8px;height:2px;background:linear-gradient(90deg,#a07c30,#d4a853,#f0d68a);opacity:.3}
+.nd{position:relative;display:flex;flex-direction:column;align-items:center;width:120px;z-index:2}
+.nd-dot{width:20px;height:20px;border-radius:50%;background:#050608;border:2px solid #d4a853;display:flex;align-items:center;justify-content:center}
+.nd-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:#d4a853}
+.nd.now .nd-dot{box-shadow:0 0 18px rgba(212,168,83,.45);animation:gp 2s ease-in-out infinite}
+@keyframes gp{0%,100%{box-shadow:0 0 14px rgba(212,168,83,.3)}50%{box-shadow:0 0 28px rgba(212,168,83,.6)}}
+.nd-yr{position:absolute;top:-22px;font-family:'Space Grotesk',monospace;font-size:.65rem;color:#d4a853;letter-spacing:.08em}
+.nd-lb{margin-top:10px;text-align:center}
+.nd-lb b{display:block;font-size:.78rem;font-weight:500;color:#f5f0eb}
+.nd-lb small{font-size:.66rem;color:rgba(245,240,235,.35)}
+.tl-par{display:flex;gap:16px;justify-content:flex-end;margin-top:18px;padding-right:20px}
+.pill{font-size:.7rem;color:#d4a853;padding:3px 13px;background:rgba(212,168,83,.07);border:1px solid rgba(212,168,83,.18);border-radius:18px}
+/* Current direction highlight */
+.nd.now .nd-lb b{color:#d4a853;font-weight:700}
+.pill.now{background:rgba(126,218,180,.12);border-color:rgba(126,218,180,.35);color:#7edab4;font-weight:600;font-size:.73rem}
+.nd.dir .nd-lb b{color:#7edab4;font-weight:700;font-size:.82rem}
+.nd.dir .nd-dot{border-color:#7edab4}
+.nd.dir .nd-dot::after{background:#7edab4}
+
+/* ===== RESEARCH ===== */
+#research{position:relative;background:#070910;padding:100px 0 70px;overflow:hidden}
+/* Taiji bg for research too */
+.taiji-bg-r{
+  position:absolute;top:50%;right:-10%;transform:translateY(-50%);
+  width:min(60vw,500px);height:min(60vw,500px);
+  opacity:.06;z-index:0;
+  animation:taijiSpin 80s linear infinite reverse;
+}
+.taiji-bg-r img{width:100%;height:100%;object-fit:contain}
+
+.rw{position:relative;z-index:5;max-width:1060px;margin:0 auto;padding:0 44px}
+.st{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;margin-bottom:14px}
+.ri{font-size:.92rem;color:rgba(245,240,235,.65);line-height:1.8;margin-bottom:18px;max-width:680px}
+.ri .hl{color:#d4a853;font-weight:500}
+.gs{display:inline-flex;align-items:center;gap:7px;color:rgba(245,240,235,.6);font-size:.8rem;padding:6px 14px;border:1px solid rgba(255,255,255,.13);border-radius:7px;margin-bottom:32px;transition:all .3s}
+.gs:hover{border-color:#d4a853;color:#d4a853}
+.tags{display:flex;gap:9px;margin-bottom:40px;flex-wrap:wrap}
+.tag{padding:6px 20px;border:1px solid rgba(255,255,255,.13);background:transparent;color:rgba(245,240,235,.6);font-family:'Inter',sans-serif;font-size:.78rem;border-radius:28px;cursor:pointer;transition:all .3s}
+.tag:hover{border-color:#d4a853;color:#d4a853}
+.tag.on{background:#d4a853;border-color:#d4a853;color:#050608;font-weight:500}
+.pubs{display:flex;flex-direction:column;gap:32px}
+.pub{display:flex;gap:24px;padding:24px;background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);border-radius:12px;transition:all .4s ease}
+.pub:hover{background:rgba(255,255,255,.035);border-color:rgba(212,168,83,.18);transform:translateY(-2px);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+.pub.hide{display:none}
+.pub-img{flex:0 0 200px;height:140px;border-radius:9px;overflow:hidden;background:linear-gradient(135deg,rgba(212,168,83,.05),rgba(126,184,218,.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.04);font-size:.72rem;color:rgba(245,240,235,.3);letter-spacing:.08em;text-transform:uppercase}
+.pub-img img{width:100%;height:100%;object-fit:cover}
+.pub-bd{flex:1;min-width:0}
+.pub-v{font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.pub-t{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:500;line-height:1.38;margin-bottom:4px}
+.pub-a{font-size:.78rem;color:rgba(245,240,235,.35);margin-bottom:7px}
+.pub-a strong{color:#d4a853}
+.fa-tag{display:inline-block;padding:1px 8px;background:rgba(126,218,180,.12);border:1px solid rgba(126,218,180,.3);border-radius:10px;font-size:.62rem;color:#7edab4;font-weight:600;letter-spacing:.04em;margin-left:6px;vertical-align:middle}
+.funded-tag{display:inline-block;padding:1px 8px;background:rgba(126,184,218,.1);border:1px solid rgba(126,184,218,.25);border-radius:10px;font-size:.62rem;color:#7eb8da;font-weight:500;letter-spacing:.04em;margin-left:6px;vertical-align:middle}
+.pub-d{font-size:.82rem;color:rgba(245,240,235,.6);line-height:1.6;margin-bottom:10px}
+.cite{display:inline-block;padding:1px 9px;background:rgba(212,168,83,.08);border-radius:10px;font-size:.7rem;color:#d4a853;font-weight:500}
+.pub-lk{display:flex;gap:9px;flex-wrap:wrap}
+.plk{padding:4px 12px;border:1px solid rgba(255,255,255,.12);border-radius:5px;font-size:.74rem;color:rgba(245,240,235,.6);transition:all .3s}
+.plk:hover{border-color:#d4a853;color:#d4a853}
+.plk.off{opacity:.32;pointer-events:none}
+
+/* ===== EXHIBITION ===== */
+#exhibition{padding:100px 0 70px;background:#050608}
+.ew{max-width:1060px;margin:0 auto;padding:0 44px}
+.ew .st{margin-bottom:10px}
+.ei{font-size:.92rem;color:rgba(245,240,235,.6);margin-bottom:36px}
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.ec{border-radius:12px;overflow:hidden;background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);transition:all .4s ease}
+.ec:hover{border-color:rgba(212,168,83,.18);transform:translateY(-3px);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+.ec .vis{height:190px;overflow:hidden;background:#0a0c14;display:flex;align-items:center;justify-content:center}
+.ec .vis span{color:rgba(245,240,235,.25);font-size:.85rem;letter-spacing:.1em}
+.ec .inf{padding:20px}
+.ec .inf h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;margin-bottom:5px}
+.ec .inf p{font-size:.82rem;color:rgba(245,240,235,.55)}
+
+footer{padding:32px 44px;border-top:1px solid rgba(255,255,255,.05);background:#050608}
+.ft{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.ft span{font-size:.78rem;color:rgba(245,240,235,.3)}
+.ft-r{display:flex;gap:18px}
+.ft-r a{font-size:.78rem;color:rgba(245,240,235,.55)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#050608}
+::-webkit-scrollbar-thumb{background:rgba(212,168,83,.25);border-radius:3px}
+
+/* MOBILE */
+@media(max-width:768px){
+  #nav{padding:12px 18px}
+  .nv-links{gap:16px}
+  .nv-links a{font-size:.68rem;letter-spacing:.1em}
+  .key-3d{width:100px;height:260px}
+  #key-reflect{width:100px;height:260px}
+  .lt-main{font-size:1.8rem}
+  .lt-sub{font-size:.7rem}
+  #lt{bottom:14%;left:6%}
+  #scroll-cue{right:18px;bottom:18px;font-size:.6rem}
+  .ab-wrap{flex-direction:column;padding:90px 22px 30px;gap:24px;align-items:center}
+  .ab-photo img{width:180px;height:240px}
+  .ab-hi{font-size:1.4rem;text-align:center}
+  .pron{font-size:.7rem}
+  .bio p{font-size:.84rem}
+  .jn{padding:30px 22px 50px}
+  .tl{flex-wrap:wrap;gap:24px;justify-content:center}
+  .tl-line{display:none}
+  .rw,.ew{padding:0 22px}
+  .st{font-size:2rem}
+  .tags{gap:6px}
+  .tag{padding:5px 14px;font-size:.72rem}
+  .pub{flex-direction:column;padding:18px}
+  #news .st+div{grid-template-columns:1fr!important}
+  .pub-img{flex:none;width:100%;height:160px}
+  .taiji-bg{width:80vw;height:80vw;opacity:.08}
+}
+@media(max-width:380px){
+  .lt-main{font-size:1.4rem}
+  .key-3d{width:80px;height:210px}
+  #key-reflect{width:80px;height:210px}
+  .ab-photo img{width:150px;height:200px}
+  .ab-hi{font-size:1.2rem}
+}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav"><div class="nv">
+  <a href="#landing" class="nv-logo" id="logo">Jewelina Wen</a>
+  <div class="nv-links">
+    <a href="#about" data-s="about">About</a>
+    <a href="#news" data-s="news">News</a>
+    <a href="#research" data-s="research">Research</a>
+    <a href="#exhibition" data-s="exhibition">Exhibition</a>
+  </div>
+</div></nav>
+
+<!-- ===== 1. LANDING ===== -->
+<section id="landing">
+  <video id="landing-video" autoplay muted playsinline preload="auto"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1">
+    <source src="assets/landing.mp4" type="video/mp4">
+  </video>
+  <!-- Click to unmute hint -->
+  <div id="sound-hint" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;
+    padding:8px 20px;background:rgba(212,168,83,0.15);border:1px solid rgba(212,168,83,0.3);
+    border-radius:20px;color:rgba(245,240,235,0.7);font-size:0.72rem;letter-spacing:0.1em;
+    cursor:pointer;backdrop-filter:blur(8px);transition:opacity 0.5s">
+    Click to enable sound
+  </div>
+  <!-- 3D Key + glow: hidden during video, shown after video ends -->
+  <div id="key-after" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;display:none">
+    <canvas id="key-canvas" style="width:100%;height:100%"></canvas>
+  </div>
+  <!-- Replay button -->
+  <button id="replay-btn" style="display:none;position:absolute;top:24px;right:32px;z-index:20;
+    padding:8px 18px;background:rgba(212,168,83,0.12);border:1px solid rgba(212,168,83,0.3);
+    border-radius:20px;color:rgba(245,240,235,0.7);font-family:'Inter',sans-serif;font-size:0.72rem;
+    letter-spacing:0.1em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:all 0.3s;text-transform:uppercase"
+    onmouseover="this.style.borderColor='rgba(212,168,83,0.6)';this.style.color='#d4a853'"
+    onmouseout="this.style.borderColor='rgba(212,168,83,0.3)';this.style.color='rgba(245,240,235,0.7)'">
+    &#x21bb; Replay
+  </button>
+  <div id="lt" style="z-index:10;position:absolute;bottom:10%;left:5%">
+    <span class="lt-sub">the key to</span>
+    <span class="lt-main">Jewelina's World</span>
+  </div>
+  <div id="scroll-cue" style="z-index:10;position:absolute;bottom:24px;right:32px">
+    <span>Scroll to explore</span>
+    <span class="sa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>
+  </div>
+</section>
+
+<!-- ===== 2. ABOUT ===== -->
+<section id="about">
+  <!-- Rotating taiji background -->
+  <div class="taiji-bg"><img src="assets/images/about.jpg" alt=""></div>
+  <div class="ab-wrap">
+    <div class="ab-photo"><img src="assets/images/me.jpg" alt="Shaoyue Wen"></div>
+    <div class="ab-text">
+      <h1 class="ab-hi">Hi! I am <span class="g">Shaoyue Wen</span> (Jewelina) <span class="cn">文劭玥</span></h1>
+      <div class="pron">Jewelina /dʒuːəˈliːnə/ &nbsp;&bull;&nbsp; Shaoyue Wen /ʃaʊ juːɛ wən/</div>
+      <div class="bio">
+        <p>I am a first-year PhD researcher at the <strong><a href="https://www.imperial.ac.uk/hamlyn-centre/" target="_blank">Hamlyn Centre</a></strong>, <strong>Imperial College London</strong>, advised by <a href="https://www.imperial.ac.uk/human-robotics" target="_blank">Prof. Etienne Burdet</a> and <a href="https://profiles.imperial.ac.uk/liyun.ma" target="_blank">Prof. Liyun Ma</a>. I am also a research member of <strong><a href="https://growing-ai-like-a-child.github.io/" target="_blank">GrowAI</a></strong>.</p>
+        <p>I completed my Master's degree <em>(GPA 3.97)</em> at <strong>New York University</strong>, guided by <a href="https://ctsilva.github.io/" target="_blank">Prof. Claudio Silva</a> and <a href="https://steinhardt.nyu.edu/people/w-russell-neuman" target="_blank">Prof. W. Russell Neuman</a>. Prior to that, I received my BEng with <strong>First Class Honours (Top 10%)</strong> from the <strong>University of Liverpool</strong>, advised by <a href="https://facultyprofiles.hkust-gz.edu.cn/faculty-personal-page?id=437" target="_blank">Prof. Hai-Ning Liang</a>, now at HKUST(GZ).</p>
+        <p>My research lies at the intersection of <strong>artificial intelligence</strong> and <strong>human-centred computing</strong>, with a focus on <strong>video reasoning</strong>, <strong>brain-inspired cognition</strong>, <strong>adaptive interaction</strong>, and <strong>embodied healthcare systems</strong>.</p>
+        <p>I have been incredibly fortunate to learn from and work alongside exceptional mentors whose guidance has profoundly shaped my academic journey. I am currently exploring <strong>brain-inspired AI</strong> with <a href="https://jason-ding.com/" target="_blank">Zijian Ding</a> at UMD. Previously, I was a Research Assistant at the <strong><a href="https://vida.engineering.nyu.edu/" target="_blank">NYU VIDA Lab</a></strong>, contributing to the <strong>DARPA Perceptually-enabled Task Guidance (PTG)</strong> project under <a href="https://ctsilva.github.io/" target="_blank">Prof. Claudio Silva</a> and <a href="https://www.jingq.org/" target="_blank">Prof. Jing Qian</a>. I have also had the privilege of working with <a href="https://rochester-bear-lab.github.io/" target="_blank">Prof. Yukang Yan</a> (University of Rochester) and <a href="https://orsonxu.com/" target="_blank">Prof. Xuhai Xu</a> (Columbia University) on <strong>adaptive systems</strong> and <strong>reinforcement learning</strong> &mdash; both truly inspiring professors! My research journey began with <a href="https://xuwenge.github.io/" target="_blank">Prof. Wenge Xu</a> at Birmingham City University, where I first discovered my passion for <strong>VR/AR</strong> and human-centred design.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Social links -->
+  <div style="position:relative;z-index:5;display:flex;gap:20px;justify-content:center;padding:10px 0 30px;flex-wrap:wrap">
+    <a href="https://scholar.google.com/citations?user=5b0nSSMAAAAJ&hl=en" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid rgba(255,255,255,.1);border-radius:20px;color:rgba(245,240,235,.6);font-size:.78rem;transition:all .3s" onmouseover="this.style.borderColor='#d4a853';this.style.color='#d4a853'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(245,240,235,.6)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24a7 7 0 110-14 7 7 0 010 14zm0-24L0 9.5l4.838 3.94A8 8 0 0112 9a8 8 0 015.162 4.44L22 9.5z"/></svg>
+      Google Scholar
+    </a>
+    <a href="https://www.linkedin.com/in/shaoyue-wen-b1a927250" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid rgba(255,255,255,.1);border-radius:20px;color:rgba(245,240,235,.6);font-size:.78rem;transition:all .3s" onmouseover="this.style.borderColor='#d4a853';this.style.color='#d4a853'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(245,240,235,.6)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://x.com/shaoyue95?s=21&amp;t=Rfhcrvz4Mz0jIYCuqRdIfg" target="_blank" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid rgba(255,255,255,.1);border-radius:20px;color:rgba(245,240,235,.6);font-size:.78rem;transition:all .3s" onmouseover="this.style.borderColor='#d4a853';this.style.color='#d4a853'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(245,240,235,.6)'">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Twitter / X
+    </a>
+    <a href="mailto:shaoyue.wen@imperial.ac.uk" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid rgba(255,255,255,.1);border-radius:20px;color:rgba(245,240,235,.6);font-size:.78rem;transition:all .3s" onmouseover="this.style.borderColor='#d4a853';this.style.color='#d4a853'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(245,240,235,.6)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
+      Email
+    </a>
+  </div>
+  <div class="jn">
+    <h2>Academic Journey <span>— still exploring the world</span></h2>
+    <div class="tl">
+      <div class="tl-line"></div>
+      <div class="nd"><span class="nd-yr">2019</span><div class="nd-dot"></div><div class="nd-lb"><b>Image Segmentation</b><small>CV Foundations</small></div></div>
+      <div class="nd"><span class="nd-yr">2020</span><div class="nd-dot"></div><div class="nd-lb"><b>Accessibility</b><small>Inclusive Design</small></div></div>
+      <div class="nd"><span class="nd-yr">2021</span><div class="nd-dot"></div><div class="nd-lb"><b>VR / AR</b><small>Immersive Interaction</small></div></div>
+      <div class="nd"><span class="nd-yr">2023</span><div class="nd-dot"></div><div class="nd-lb"><b>Adaptive Systems</b><small>Personalized AI</small></div></div>
+      <div class="nd now dir"><span class="nd-yr">2025+</span><div class="nd-dot"></div><div class="nd-lb"><b>Multi-Agent Healthcare</b><small>Current Focus</small></div></div>
+      <div class="nd now dir"><span class="nd-yr">2025+</span><div class="nd-dot"></div><div class="nd-lb"><b>Brain-Inspired AI</b><small>Current Focus</small></div></div>
+      <div class="nd now dir"><span class="nd-yr">2025+</span><div class="nd-dot"></div><div class="nd-lb"><b>Video Reasoning</b><small>Current Focus</small></div></div>
+    </div>
+    <div class="tl-par" style="display:none">
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWS ===== -->
+<section id="news" style="background:#050608;padding:80px 0 60px">
+  <div style="max-width:1060px;margin:0 auto;padding:0 44px">
+    <h1 class="st">News</h1>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 40px;margin-top:24px">
+      <div style="border-left:2px solid rgba(212,168,83,.15);padding-left:20px;display:flex;flex-direction:column;gap:16px">
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2026.04</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Excited to serve as <strong style="color:#f5f0eb">Session Chair</strong> at ACM CHI 2026!</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2026.03</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Submitted two <strong style="color:#f5f0eb">first-author</strong> papers to <strong style="color:#f5f0eb">UIST</strong> and <strong style="color:#f5f0eb">IROS</strong> — fingers crossed!</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2026.03</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Organized <strong style="color:#f5f0eb">ShallWe Tech x TRAE London #VibeCoding</strong> event at AWS.</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2026.03</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Co-hosted <strong style="color:#f5f0eb">OpenClaw Night</strong> at <strong style="color:#f5f0eb">Netmind.AI</strong> &amp; <strong style="color:#f5f0eb">Z.AI</strong>.</p></div>
+      </div>
+      <div style="border-left:2px solid rgba(212,168,83,.15);padding-left:20px;display:flex;flex-direction:column;gap:16px">
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2026.02</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Released our <strong style="color:#f5f0eb">million-scale video reasoning dataset</strong> — VBVR is live!</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2025.12</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Officially started my <strong style="color:#f5f0eb">PhD at Imperial College London</strong>. A new chapter begins.</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2025.10</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Received an <strong style="color:#f5f0eb">Imperial College school scholarship</strong> — finally made it after many rounds of setbacks!</p></div>
+        <div><span style="font-family:'Space Grotesk',monospace;font-size:.68rem;color:#d4a853;letter-spacing:.05em">2025.07</span><p style="font-size:.85rem;color:rgba(245,240,235,.7);margin:3px 0 0;line-height:1.6">Officially graduated with my <strong style="color:#f5f0eb">Master's from NYU</strong>. New York, thank you for everything.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. RESEARCH ===== -->
+<section id="research">
+  <div class="taiji-bg-r"><img src="assets/images/about.jpg" alt=""></div>
+  <div class="rw">
+    <h1 class="st">Research</h1>
+    <p class="ri">I design, build, and evaluate <strong>intelligent interactive systems</strong> that bridge <span class="hl">video reasoning</span>, <span class="hl">neuro-inspired cognition</span>, <span class="hl">affective intelligence</span>, and <span class="hl">embodied healthcare</span> &mdash; creating technology that understands, adapts, and empowers.</p>
+    <a href="https://scholar.google.com/citations?user=5b0nSSMAAAAJ&hl=en" target="_blank" class="gs">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24a7 7 0 110-14 7 7 0 010 14zm0-24L0 9.5l4.838 3.94A8 8 0 0112 9a8 8 0 015.162 4.44L22 9.5z"/></svg>
+      Google Scholar
+    </a>
+    <div class="tags">
+      <button class="tag on" data-t="all">All</button>
+      <button class="tag" data-t="video">Video Reasoning</button>
+      <button class="tag" data-t="adaptive">Adaptive</button>
+      <button class="tag" data-t="robot">Robot</button>
+      <button class="tag" data-t="vrar">VR / AR</button>
+    </div>
+    <div class="pubs">
+      <!-- 1. VBVR -->
+      <div class="pub" data-t="video"><div class="pub-img"><img src="assets/images/papers/vbvr.png" alt="VBVR"></div><div class="pub-bd"><div class="pub-v">2026 &middot; Preprint</div><h3 class="pub-t">A Very Big Video Reasoning Suite</h3><p class="pub-a"><strong>S. Wen</strong>, et al.</p><p class="pub-d">A comprehensive benchmark for evaluating video understanding and video reasoning through multi-modal analysis.</p><div class="pub-lk"><a href="https://arxiv.org/abs/2602.20159" target="_blank" class="plk">Paper</a><a href="https://video-reason.com/" target="_blank" class="plk">Website</a><a href="https://huggingface.co/datasets/Video-Reason/VBVR-Dataset" target="_blank" class="plk">Dataset</a><a href="https://huggingface.co/Video-Reason/VBVR-Wan2.2" target="_blank" class="plk">Model</a></div></div></div>
+
+      <!-- 2. AdaptiveAudience -->
+      <div class="pub" data-t="adaptive"><div class="pub-img"><img src="assets/images/papers/adaptiveaudience.png" alt="AdaptiveAudience"></div><div class="pub-bd"><div class="pub-v">Under Review</div><h3 class="pub-t">AdaptiveAudience: Personalized Audience Feedback System<span class="fa-tag">First Author</span></h3><p class="pub-a"><strong>Shaoyue Wen</strong>, et al.</p><p class="pub-d">Personalizes virtual audience feedback to enhance public speaking training through real-time AI analysis.</p><div class="pub-lk"><span class="plk off">PDF (Coming Soon)</span></div></div></div>
+
+      <!-- 3. AdaptiveVoice -->
+      <div class="pub" data-t="adaptive"><div class="pub-img"><img src="assets/images/papers/adaptivevoice.png" alt="AdaptiveVoice"></div><div class="pub-bd"><div class="pub-v">ACM CHI 2024</div><h3 class="pub-t">AdaptiveVoice: Cognitively Adaptive Voice Interface for Driving Assistance<span class="fa-tag">First Author</span></h3><p class="pub-a"><strong>Shaoyue Wen</strong>, Songming Ping, Jialin Wang, Hai-Ning Liang, Xuhai Xu, Yukang Yan</p><p class="pub-d">A voice-based adaptive interface adjusting interaction style based on cognitive load for safer driving.</p><div class="pub-lk"><a href="https://dl.acm.org/doi/full/10.1145/3613904.3642876" target="_blank" class="plk">PDF</a></div></div></div>
+
+      <!-- 4. AdaptiveCopilot -->
+      <div class="pub" data-t="adaptive"><div class="pub-img"><img src="assets/images/papers/adaptivecopilot.png" alt="AdaptiveCopilot"></div><div class="pub-bd"><div class="pub-v">IEEE VR 2025</div><h3 class="pub-t">AdaptiveCopilot: Adaptive AI Copilot for Immersive VR Training<span class="fa-tag">First Author</span> <a href="https://www.darpa.mil/research/programs/perceptually-enabled-task-guidance" target="_blank" class="funded-tag">Funded by DARPA</a></h3><p class="pub-a"><strong>Shaoyue Wen</strong>, Michael Middleton, Songming Ping, Nayan N Chawla, Guande Wu, Bradley S Feest, Chihab Nadri, Yunmei Liu, David Kaber, Maryam Zahabi, Ryan P McMahan, Sonia Castelo, Ryan McKendrick, Jing Qian, Cl&aacute;udio T Silva</p><p class="pub-d">An intelligent copilot adapting to user behavior in VR for personalized guidance.</p><div class="pub-lk"><a href="https://ieeexplore.ieee.org/abstract/document/10937388" target="_blank" class="plk">PDF</a></div></div></div>
+
+      <!-- 5. MAS to MARS -->
+      <div class="pub" data-t="robot"><div class="pub-img"><img src="assets/images/papers/mas-to-mars.png" alt="MAS to MARS"></div><div class="pub-bd"><div class="pub-v">Under Review</div><h3 class="pub-t">Before Humans Join the Team: Diagnosing Coordination Failures in Healthcare Robot Team Simulation</h3><p class="pub-a">Yuanchen Bai, Zijian Ding, <strong>Shaoyue Wen</strong>, Xiang Chang, Angelique Taylor</p><p class="pub-d">Hierarchical multi-agent robotic system revealing coordination failures and autonomy-stability trade-offs.</p><div class="pub-lk"><a href="https://byc-sophie.github.io/mas-to-mars/" target="_blank" class="plk">Project Page</a></div></div></div>
+
+      <!-- 6. Surgi-HDTMR -->
+      <div class="pub" data-t="robot"><div class="pub-img"><img src="assets/images/papers/surgi-hdtmr.png" alt="Surgi-HDTMR"></div><div class="pub-bd"><div class="pub-v">Under Review</div><h3 class="pub-t">Surgi-HDTMR: Closing the Sensorimotor Loop in Bimanual Microsurgery via Haptics, Digital Twin, and Mixed Reality<span class="fa-tag">First Author</span></h3><p class="pub-a"><strong>Shaoyue Wen</strong>, et al.</p><p class="pub-d">Integrating haptic feedback, digital twin, and mixed reality for microsurgery training.</p><div class="pub-lk"><span class="plk off">PDF (Coming Soon)</span></div></div></div>
+
+      <!-- 7. VR/AR Papers -->
+      <div class="pub" data-t="vrar"><div class="pub-img"><img src="assets/images/papers/vr-acceptance.png" alt="VR Acceptance"></div><div class="pub-bd"><div class="pub-v">IJHCI, 2023</div><h3 class="pub-t">Acceptance of Virtual Reality Exergames Among Chinese Older Adults</h3><p class="pub-a">W. Xu, H.N. Liang, K. Yu, <strong>S. Wen</strong>, N. Baghaei, H. Tu</p><p class="pub-d">Investigating factors influencing older adults' acceptance of VR exercise games. <span class="cite">103 citations</span></p><div class="pub-lk"><a href="https://www.tandfonline.com/doi/full/10.1080/10447318.2021.2009041" target="_blank" class="plk">PDF</a></div></div></div>
+
+      <div class="pub" data-t="vrar"><div class="pub-img"><img src="assets/images/papers/vr-exergame.png" alt="VR Exergame"></div><div class="pub-bd"><div class="pub-v">JMIR Serious Games, 2021</div><h3 class="pub-t">Effects of an Immersive VR Exergame on University Students' Anxiety, Depression, and Perceived Stress</h3><p class="pub-a">W. Xu, H.N. Liang, N. Baghaei, X. Ma, K. Yu, X. Meng, <strong>S. Wen</strong></p><p class="pub-d">VR exergames as mental health intervention tools for students. <span class="cite">83 citations</span></p><div class="pub-lk"><a href="https://games.jmir.org/2021/4/e29330" target="_blank" class="plk">PDF</a></div></div></div>
+
+      <div class="pub" data-t="vrar"><div class="pub-img"><img src="assets/images/papers/cheerforme.png" alt="Cheer for Me"></div><div class="pub-bd"><div class="pub-v">Virtual Reality, 2022</div><h3 class="pub-t">Cheer for Me: Effect of Non-Player Character Audience Feedback on Older Adult Users of VR Exergames</h3><p class="pub-a">W. Xu, H.N. Liang, <strong>S. Wen</strong>, et al.</p><p class="pub-d">How NPC audience feedback impacts older adults' engagement in VR exercise gaming.</p><div class="pub-lk"><a href="https://www.mdpi.com/2414-4088/6/7/47" target="_blank" class="plk">PDF</a></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. EXHIBITION ===== -->
+<section id="exhibition">
+  <div class="ew">
+    <h1 class="st">Exhibition & Curatorial</h1>
+    <p class="ei">Beyond research, I am also a <strong style="color:#f5f0eb">curator</strong> — organizing exhibitions that bridge contemporary art, technology, and cross-cultural dialogue across world-class institutions.</p>
+    <div class="eg">
+
+      <div class="ec" onclick="openExhibition('louvre')" style="cursor:pointer">
+        <div class="vis"><img src="assets/images/exhibition/louvre.png" alt="Louvre"></div>
+        <div class="inf"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#f5f0eb;margin-bottom:2px">Carrousel du Louvre</h3><p style="font-size:.78rem;color:rgba(245,240,235,.5);margin-bottom:6px">A Manifesto II, Paris · Feb 2025</p><p>International collaborative exhibition celebrating artistic freedom at the crossroads of civilizations.</p></div>
+      </div>
+
+      <div class="ec" onclick="openExhibition('british-museum')" style="cursor:pointer">
+        <div class="vis"><img src="assets/images/exhibition/british-museum.jpg" alt="British Museum"></div>
+        <div class="inf"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#f5f0eb;margin-bottom:2px">The British Museum</h3><p style="font-size:.78rem;color:rgba(245,240,235,.5);margin-bottom:6px">Art and Making · Mar 2026</p><p>Academic forum on material culture, craft, and emerging practices at BP Theatre.</p></div>
+      </div>
+
+      <div class="ec" onclick="openExhibition('oxford')" style="cursor:pointer">
+        <div class="vis"><img src="assets/images/exhibition/oxford.jpeg" alt="Oxford"></div>
+        <div class="inf"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#f5f0eb;margin-bottom:2px">University of Oxford</h3><p style="font-size:.78rem;color:rgba(245,240,235,.5);margin-bottom:6px">Contemporary Practice II · Mar 2026</p><p>Forum on craft, generation, and responsibility in contemporary art practice.</p></div>
+      </div>
+
+      <div class="ec" onclick="openExhibition('hk-art-expo')" style="cursor:pointer">
+        <div class="vis"><img src="assets/images/exhibition/hk-art-expo.png" alt="HK Art Expo"></div>
+        <div class="inf"><h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:#f5f0eb;margin-bottom:2px">Art Hong Kong Expo</h3><p style="font-size:.78rem;color:rgba(245,240,235,.5);margin-bottom:6px">Resound: A Manifesto · May 2024</p><p>50+ artists, 100+ works across sculpture, painting, light installations, and digital art.</p></div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!-- Exhibition Detail Modal -->
+<div id="exh-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;background:rgba(0,0,0,0);transition:background .5s;overflow-y:auto">
+  <div id="exh-modal-card" style="max-width:700px;width:92%;margin:60px auto;padding:36px 32px;background:rgba(12,10,6,.97);border:1px solid rgba(212,168,83,.2);border-radius:16px;transform:translateY(30px);opacity:0;transition:all .6s ease;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 80px rgba(0,0,0,.6)">
+  </div>
+</div>
+
+<footer><div class="ft">
+  <span>&copy; 2026 Shaoyue (Jewelina) Wen</span>
+  <div class="ft-r">
+    <a href="https://scholar.google.com/citations?user=5b0nSSMAAAAJ&hl=en" target="_blank">Google Scholar</a>
+    <a href="mailto:jewelina@imperial.ac.uk">Email</a>
+  </div>
+</div></footer>
+
+<script type="module">
+// Force scroll to top
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+window.scrollTo(0,0);
+
+/* ===== THREE.JS 3D LANDING ===== */
+import { initLanding } from './landing3d.js';
+var landingEl = document.getElementById('landing-3d');
+if(landingEl) initLanding(landingEl);
+</script>
+
+<script>
+/* ===== VIDEO + KEY AFTER ===== */
+!function(){
+  var vid=document.getElementById('landing-video');
+  var keyAfter=document.getElementById('key-after');
+  var keyCanvas=document.getElementById('key-canvas');
+  var keyShowing=false;
+
+  var soundHint=document.getElementById('sound-hint');
+  var replayBtn=document.getElementById('replay-btn');
+  if(!vid||!keyCanvas) return;
+
+  // Replay button
+  if(replayBtn){
+    replayBtn.addEventListener('click',function(){
+      // Hide key and replay button
+      keyAfter.style.opacity='0';
+      replayBtn.style.display='none';
+      setTimeout(function(){
+        keyAfter.style.display='none';
+        vid.style.display='';
+        vid.style.opacity='1';
+        vid.currentTime=0;
+        vid.play();
+      },500);
+    });
+  }
+
+  // When video ends: freeze last frame, show animated key on top
+  vid.addEventListener('ended',function(){
+    if(soundHint) soundHint.style.display='none';
+    // Fade out video, show key on black background
+    vid.style.transition='opacity 1.5s ease';
+    vid.style.opacity='0';
+    setTimeout(function(){
+      vid.pause();
+      vid.style.display='none';
+      showKey();
+      if(replayBtn) replayBtn.style.display='block';
+    },1500);
+  });
+
+  // Ensure video plays on load
+  vid.currentTime=0;
+  var playPromise=vid.play();
+  if(playPromise) playPromise.catch(function(){
+    // Autoplay blocked - wait for user click
+    document.addEventListener('click',function once(){
+      vid.play();
+      document.removeEventListener('click',once);
+    });
+  });
+
+  // Click anywhere to unmute
+  function unmute(){
+    vid.muted=false;
+    if(soundHint) soundHint.style.opacity='0';
+    setTimeout(function(){ if(soundHint) soundHint.style.display='none'; },500);
+    document.removeEventListener('click',unmute);
+  }
+  document.addEventListener('click',unmute);
+  if(soundHint) soundHint.addEventListener('click',unmute);
+
+  function showKey(){
+    if(keyShowing) return;
+    keyShowing=true;
+    keyAfter.style.display='block';
+    keyAfter.style.opacity='0';
+    keyAfter.style.transition='opacity 1.5s ease';
+    setTimeout(function(){ keyAfter.style.opacity='1'; },50);
+    startKeyAnimation();
+  }
+
+  // If user scrolls back up after video ended, keep key visible
+  // (video stays on last frame)
+
+  /* ===== Animated 3D Key with golden light ===== */
+  function startKeyAnimation(){
+    var c=keyCanvas, ctx=c.getContext('2d');
+    var W,H,t=0;
+    var sparkles=[];
+    var mx=-999,my=-999;
+    var mxSmooth=-999,mySmooth=-999;
+
+    // === BAGUA GAME STATE ===
+    var nodes=[]; // 8 bagua nodes
+    var activatedCount=0;
+    var allConnected=false;
+    var burstTime=0; // when all connected, burst animation
+    var keyGlow=0.3; // key brightness, increases as nodes activate
+    // Bagua trigram symbols
+    var baguaSymbols=['☰','☱','☲','☳','☴','☵','☶','☷'];
+    var baguaNames=['Heaven','Lake','Fire','Thunder','Wind','Water','Mountain','Earth'];
+
+    // Hint text
+    var hintAlpha=1;
+    var fortuneShown=false;
+
+    // ============================================
+    // DIVINATION SYSTEM 玄学运势系统
+    // I Ching hexagram + Five Elements + Scripture
+    // ============================================
+
+    // 天干地支 Heavenly Stems & Earthly Branches
+    var tianGan=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    var diZhi=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    var wuXing=['木 Wood','木 Wood','火 Fire','火 Fire','土 Earth','土 Earth','金 Metal','金 Metal','水 Water','水 Water'];
+    var wuXingEmoji=['🌳','🌳','🔥','🔥','🏔️','🏔️','⚔️','⚔️','💧','💧'];
+    var wuXingColors=['#4a9','#4a9','#e64','#e64','#c90','#c90','#aab','#aab','#48c','#48c'];
+
+    // 易经八卦 I Ching Trigrams
+    var trigramData=[
+      {name:'乾 Heaven',nature:'Creative',element:'Metal',energy:'Yang Supreme'},
+      {name:'兑 Lake',nature:'Joyous',element:'Metal',energy:'Yang Minor'},
+      {name:'离 Fire',nature:'Radiance',element:'Fire',energy:'Yin Minor'},
+      {name:'震 Thunder',nature:'Awakening',element:'Wood',energy:'Yang Rising'},
+      {name:'巽 Wind',nature:'Gentle',element:'Wood',energy:'Yin Gentle'},
+      {name:'坎 Water',nature:'Depth',element:'Water',energy:'Yang Hidden'},
+      {name:'艮 Mountain',nature:'Stillness',element:'Earth',energy:'Yang Rest'},
+      {name:'坤 Earth',nature:'Receptive',element:'Earth',energy:'Yin Supreme'}
+    ];
+
+    // Scripture wisdom pool
+    var wisdoms=[
+      {cn:'上善若水，水善利万物而不争。',en:'The highest goodness is like water — it benefits all things without competing.',src:'道德经 · Chapter 8'},
+      {cn:'知人者智，自知者明。',en:'Knowing others is intelligence; knowing yourself is true wisdom.',src:'道德经 · Chapter 33'},
+      {cn:'千里之行，始于足下。',en:'A journey of a thousand miles begins with a single step.',src:'道德经 · Chapter 64'},
+      {cn:'大器晚成，大音希声，大象无形。',en:'Great vessels take long to complete. Great sounds are silent. Great forms are shapeless.',src:'道德经 · Chapter 41'},
+      {cn:'天下莫柔弱于水，而攻坚强者莫之能胜。',en:'Nothing is softer than water, yet nothing better overcomes the hard and strong.',src:'道德经 · Chapter 78'},
+      {cn:'道生一，一生二，二生三，三生万物。',en:'The Tao gives birth to one, one gives birth to two, two gives birth to three, three gives birth to all things.',src:'道德经 · Chapter 42'},
+      {cn:'一切有为法，如梦幻泡影，如露亦如电，应作如是观。',en:'All conditioned phenomena are like dreams, illusions, bubbles, and shadows — like dew and lightning.',src:'金刚经 · Diamond Sutra'},
+      {cn:'应无所住而生其心。',en:'Let your mind arise without attaching to anything.',src:'金刚经 · Diamond Sutra'},
+      {cn:'凡所有相，皆是虚妄。若见诸相非相，即见如来。',en:'All appearances are illusory. See through appearances and you see the truth.',src:'金刚经 · Diamond Sutra'},
+      {cn:'万事都互相效力，叫爱神的人得益处。',en:'In all things God works for the good of those who love him.',src:'Romans 8:28 · 罗马书'},
+      {cn:'那等候耶和华的，必重新得力，如鹰展翅上腾。',en:'Those who wait upon the Lord shall renew their strength, mounting up with wings like eagles.',src:'Isaiah 40:31 · 以赛亚书'},
+      {cn:'你们要先求他的国和他的义，这一切都要加给你们了。',en:'Seek first his kingdom and his righteousness, and all these things will be given to you.',src:'Matthew 6:33 · 马太福音'},
+      {cn:'狂心若歇，歇即菩提。',en:'When the restless mind comes to rest, that very resting is enlightenment.',src:'楞严经 · Shurangama Sutra'},
+      {cn:'归元性无二，方便有多门。',en:'The nature of returning to the source is not dual — there are many doors of skillful means.',src:'楞严经 · Shurangama Sutra'},
+      {cn:'理则顿悟，乘悟并销；事非顿除，因次第尽。',en:'In principle, awakening is sudden; in practice, cultivation is gradual.',src:'楞严经 · Shurangama Sutra'},
+      {cn:'心生则种种法生，心灭则种种法灭。',en:'When mind arises, all things arise. When mind ceases, all things cease.',src:'大乘起信论 · Awakening of Faith'},
+    ];
+
+    // Fortune readings based on energy
+    var fortuneReadings=[
+      {level:'大吉 · Supreme Blessing',cn:'今日气场极旺，万事皆宜。你的能量与宇宙频率高度共振，适合开启重要计划、做出关键决定。',en:'Your energy is in supreme harmony with the universe today. All endeavors are blessed — launch bold plans and make important decisions with confidence.'},
+      {level:'上吉 · Great Fortune',cn:'天时地利人和，今日运势极佳。灵感如泉涌，创造力达到巅峰，抓住每一个灵光一现的瞬间。',en:'Heaven, earth, and human elements align perfectly. Inspiration flows like a spring — your creativity peaks today. Seize every flash of insight.'},
+      {level:'中吉 · Good Fortune',cn:'今日能量稳定上升，适合深入思考与稳步前进。保持专注，你会发现隐藏的机遇正在浮现。',en:'Your energy rises steadily today. Stay focused on deep work — hidden opportunities are surfacing for those with the patience to notice.'},
+      {level:'小吉 · Gentle Blessing',cn:'今日宜静不宜动，内在智慧正在酝酿。放慢脚步，聆听内心的声音，答案会自然浮现。',en:'Today favors stillness over action. Inner wisdom is brewing — slow down, listen to your intuition, and answers will emerge naturally.'},
+      {level:'平 · Balance',cn:'阴阳平衡之日，万物归于中道。不必急于求成，顺其自然，保持平常心即是最大的智慧。',en:'A day of perfect yin-yang balance. No need to rush — flow with the natural rhythm. Maintaining equanimity is the greatest wisdom.'},
+      {level:'小凶转吉 · Challenge to Growth',cn:'今日或有小挫折，但这正是成长的契机。逆境中蕴含着最珍贵的教训，保持耐心，转机即将到来。',en:'Minor setbacks may arise, but they carry precious lessons. Within adversity lies the seed of your next breakthrough — patience will turn the tide.'},
+    ];
+
+    function generateDivination(){
+      var now=new Date();
+      var year=now.getFullYear(), month=now.getMonth()+1, day=now.getDate(), hour=now.getHours();
+
+      // 天干地支 calculation (simplified)
+      var tgIdx=(year-4)%10;
+      var dzIdx=(year-4)%12;
+      var dayTg=(Math.floor((now.getTime()/86400000)+25)%10+10)%10;
+      var dayDz=(Math.floor((now.getTime()/86400000)+1)%12+12)%12;
+
+      // 五行 of the day
+      var dayWuXing=wuXing[dayTg];
+      var dayWuXingEmoji=wuXingEmoji[dayTg];
+      var dayWuXingColor=wuXingColors[dayTg];
+
+      // Generate hexagram from node activation order + time
+      var seed=0;
+      for(var i=0;i<nodes.length;i++){
+        if(nodes[i].active) seed+=(nodes[i].activateTime*1000*(i+1));
+      }
+      seed+=now.getTime();
+      var upperTri=Math.abs(Math.floor(Math.sin(seed)*1000))%8;
+      var lowerTri=Math.abs(Math.floor(Math.cos(seed*1.3)*1000))%8;
+
+      // Fortune level based on combined energy
+      var energyScore=(upperTri+lowerTri+dayTg+hour)%6;
+      var fortune=fortuneReadings[energyScore];
+
+      // Pick wisdom quote
+      var wisdomIdx=Math.abs(Math.floor(Math.sin(seed*2.7)*1000))%wisdoms.length;
+      var wisdom=wisdoms[wisdomIdx];
+
+      // Lucky elements
+      var luckyItems=[
+        {cn:'紫水晶 Amethyst',emoji:'🔮',desc:'静心开慧 · Clarity & Intuition'},
+        {cn:'黑曜石 Obsidian',emoji:'🖤',desc:'辟邪护体 · Protection & Grounding'},
+        {cn:'月光石 Moonstone',emoji:'🌙',desc:'柔和直觉 · Gentle Intuition'},
+        {cn:'虎眼石 Tiger\'s Eye',emoji:'🐯',desc:'勇气决断 · Courage & Decision'},
+        {cn:'翡翠 Jade',emoji:'💚',desc:'平安吉祥 · Peace & Prosperity'},
+        {cn:'青金石 Lapis Lazuli',emoji:'💎',desc:'智慧真理 · Wisdom & Truth'},
+        {cn:'红玛瑙 Red Agate',emoji:'❤️',desc:'活力热情 · Vitality & Passion'},
+        {cn:'白水晶 Clear Quartz',emoji:'✨',desc:'净化能量 · Purification & Amplify'},
+        {cn:'檀香木 Sandalwood',emoji:'🪵',desc:'安神定气 · Calm & Focus'},
+        {cn:'金珀 Golden Amber',emoji:'🌟',desc:'招财纳福 · Abundance & Warmth'},
+        {cn:'绿松石 Turquoise',emoji:'🩵',desc:'旅行守护 · Travel & Protection'},
+        {cn:'石榴石 Garnet',emoji:'🔴',desc:'爱与力量 · Love & Strength'},
+        {cn:'沉香 Agarwood',emoji:'🌿',desc:'通灵悟道 · Spiritual Awakening'},
+        {cn:'碧玺 Tourmaline',emoji:'🌈',desc:'转运化煞 · Fortune & Harmony'},
+        {cn:'琥珀 Amber',emoji:'🧡',desc:'温暖疗愈 · Healing & Warmth'},
+        {cn:'菩提子 Bodhi Seed',emoji:'📿',desc:'觉悟自在 · Enlightenment & Freedom'},
+      ];
+      var luckyItem=luckyItems[(dayTg+day+hour)%luckyItems.length];
+
+      return {
+        // 天干地支
+        ganZhi:tianGan[dayTg]+diZhi[dayDz]+'日',
+        yearGanZhi:tianGan[tgIdx]+diZhi[dzIdx]+'年',
+        // 五行
+        wuXing:dayWuXing,
+        wuXingEmoji:dayWuXingEmoji,
+        wuXingColor:dayWuXingColor,
+        // 卦象
+        upperTrigram:trigramData[upperTri],
+        lowerTrigram:trigramData[lowerTri],
+        upperSymbol:baguaSymbols[upperTri],
+        lowerSymbol:baguaSymbols[lowerTri],
+        // 运势
+        fortune:fortune,
+        // 经文
+        wisdom:wisdom,
+        // 幸运
+        luckyItem:luckyItem,
+        // Date
+        date:now
+      };
+    }
+
+    function showFortunePopup(){
+      var d=generateDivination();
+
+      var overlay=document.createElement('div');
+      overlay.id='fortune-overlay';
+      overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background 0.8s ease;overflow-y:auto;padding:20px;';
+
+      var card=document.createElement('div');
+      card.style.cssText='max-width:480px;width:95%;padding:36px 30px;background:rgba(12,10,6,0.96);border:1px solid rgba(212,168,83,0.3);border-radius:20px;text-align:center;transform:scale(0.85) translateY(20px);opacity:0;transition:all 0.8s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 60px rgba(212,168,83,0.08);margin:auto;';
+
+      var h='<div style="font-size:2.2rem;margin-bottom:6px">☯️</div>'
+        // Title
+        +'<div style="font-family:Cormorant Garamond,serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,168,83,.4);margin-bottom:4px">Divination · 今日天机</div>'
+        +'<div style="font-family:Cormorant Garamond,serif;font-size:.72rem;color:rgba(212,168,83,.35);margin-bottom:16px">'+d.date.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})+' · '+d.yearGanZhi+' · '+d.ganZhi+'</div>'
+        // Hexagram
+        +'<div style="display:flex;justify-content:center;gap:24px;margin-bottom:16px">'
+        +'<div style="text-align:center"><div style="font-size:1.6rem">'+d.upperSymbol+'</div><div style="font-size:.6rem;color:rgba(212,168,83,.5)">上卦 Upper</div><div style="font-size:.68rem;color:rgba(245,240,235,.6)">'+d.upperTrigram.name+'</div><div style="font-size:.58rem;color:rgba(245,240,235,.35)">'+d.upperTrigram.nature+' · '+d.upperTrigram.energy+'</div></div>'
+        +'<div style="display:flex;align-items:center;color:rgba(212,168,83,.2);font-size:1.5rem">⟷</div>'
+        +'<div style="text-align:center"><div style="font-size:1.6rem">'+d.lowerSymbol+'</div><div style="font-size:.6rem;color:rgba(212,168,83,.5)">下卦 Lower</div><div style="font-size:.68rem;color:rgba(245,240,235,.6)">'+d.lowerTrigram.name+'</div><div style="font-size:.58rem;color:rgba(245,240,235,.35)">'+d.lowerTrigram.nature+' · '+d.lowerTrigram.energy+'</div></div>'
+        +'</div>'
+        // Five Elements
+        +'<div style="margin-bottom:16px;padding:8px 14px;background:rgba(212,168,83,.05);border-radius:10px;display:inline-block">'
+        +'<span style="font-size:.65rem;color:rgba(212,168,83,.45)">今日五行 Today\'s Element</span><br>'
+        +'<span style="font-size:1.1rem">'+d.wuXingEmoji+'</span> '
+        +'<span style="font-size:.85rem;color:'+d.wuXingColor+';font-weight:500">'+d.wuXing+'</span>'
+        +'</div>'
+        // Fortune level
+        +'<div style="margin-bottom:14px">'
+        +'<div style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:#d4a853;font-weight:600;margin-bottom:8px">'+d.fortune.level+'</div>'
+        +'<div style="font-size:.88rem;line-height:1.8;color:rgba(245,240,235,.8);margin-bottom:6px">'+d.fortune.cn+'</div>'
+        +'<div style="font-size:.78rem;line-height:1.65;color:rgba(245,240,235,.45);font-style:italic">'+d.fortune.en+'</div>'
+        +'</div>'
+        // Divider
+        +'<div style="width:60px;height:1px;background:rgba(212,168,83,.2);margin:14px auto"></div>'
+        // Wisdom quote
+        +'<div style="margin-bottom:14px">'
+        +'<div style="font-size:.6rem;color:rgba(212,168,83,.35);letter-spacing:.15em;margin-bottom:6px">经文启示 SCRIPTURE WISDOM</div>'
+        +'<div style="font-size:.92rem;line-height:1.8;color:rgba(245,240,235,.75);margin-bottom:4px">「'+d.wisdom.cn+'」</div>'
+        +'<div style="font-size:.76rem;line-height:1.6;color:rgba(245,240,235,.4);font-style:italic;margin-bottom:4px">'+d.wisdom.en+'</div>'
+        +'<div style="font-size:.58rem;color:rgba(212,168,83,.3)">— '+d.wisdom.src+'</div>'
+        +'</div>'
+        // Lucky info
+        +'<div style="margin:14px auto;padding:12px 20px;background:rgba(212,168,83,.06);border:1px solid rgba(212,168,83,.12);border-radius:12px;display:inline-block;text-align:center">'
+        +'<div style="font-size:.6rem;color:rgba(212,168,83,.4);letter-spacing:.12em;margin-bottom:6px">今日幸运元素 TODAY\'S LUCKY CHARM</div>'
+        +'<div style="font-size:1.6rem;margin-bottom:4px">'+d.luckyItem.emoji+'</div>'
+        +'<div style="font-size:.9rem;color:#d4a853;font-weight:500;margin-bottom:3px">'+d.luckyItem.cn+'</div>'
+        +'<div style="font-size:.68rem;color:rgba(245,240,235,.45);font-style:italic">'+d.luckyItem.desc+'</div>'
+        +'</div>'
+        // Energy bar
+        +'<div style="margin:10px auto;max-width:200px">'
+        +'<div style="font-size:.58rem;color:rgba(212,168,83,.35);margin-bottom:4px">能量共振 Energy Resonance</div>'
+        +'<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+((parseInt(d.fortune.level)*15+55)||78)+'%;background:linear-gradient(90deg,#a07c30,#d4a853,#f0d68a);border-radius:2px;animation:pulse-bar 2s ease-in-out infinite"></div></div>'
+        +'</div>'
+        // Button
+        +'<button id="fortune-close" style="margin-top:16px;padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
+
+      card.innerHTML=h;
+      overlay.appendChild(card);
+
+      // Add pulse animation for energy bar
+      var styleEl=document.createElement('style');
+      styleEl.textContent='@keyframes pulse-bar{0%,100%{opacity:.7}50%{opacity:1}}';
+      document.head.appendChild(styleEl);
+
+      document.body.appendChild(overlay);
+
+      setTimeout(function(){
+        overlay.style.background='rgba(0,0,0,0.65)';
+        card.style.transform='scale(1) translateY(0)';
+        card.style.opacity='1';
+      },50);
+
+      var closeBtn=document.getElementById('fortune-close');
+      closeBtn.onmouseover=function(){this.style.borderColor='rgba(212,168,83,0.7)';this.style.color='#d4a853';};
+      closeBtn.onmouseout=function(){this.style.borderColor='rgba(212,168,83,0.35)';this.style.color='rgba(245,240,235,0.75)';};
+      closeBtn.onclick=function(){
+        card.style.transform='scale(0.9) translateY(10px)';card.style.opacity='0';
+        overlay.style.background='rgba(0,0,0,0)';
+        setTimeout(function(){ overlay.remove(); },600);
+      };
+      overlay.addEventListener('click',function(e){ if(e.target===overlay) closeBtn.click(); });
+    }
+
+    function initNodes(){
+      nodes=[];
+      activatedCount=0;
+      allConnected=false;
+      burstTime=0;
+      keyGlow=0.3;
+      hintAlpha=1;
+      fortuneShown=false;
+      var cx=W/2, cy=H/2-H*0.02;
+      var radius=Math.min(W,H)*0.32;
+      for(var i=0;i<8;i++){
+        var angle=-Math.PI/2+i*(Math.PI*2/8);
+        nodes.push({
+          x:cx+Math.cos(angle)*radius,
+          y:cy+Math.sin(angle)*radius,
+          angle:angle,
+          symbol:baguaSymbols[i],
+          name:baguaNames[i],
+          active:false,
+          activateTime:0,
+          pulsePhase:Math.random()*Math.PI*2,
+          hitRadius:28
+        });
+      }
+    }
+
+    // Mouse tracking
+    keyAfter.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY});
+    keyAfter.addEventListener('touchmove',function(e){mx=e.touches[0].clientX;my=e.touches[0].clientY},{passive:true});
+    keyAfter.addEventListener('mouseleave',function(){mx=-999;my=-999});
+
+    // Click to activate nodes
+    keyAfter.addEventListener('click',function(e){
+      if(allConnected) return;
+      var clickX=e.clientX, clickY=e.clientY;
+      for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        if(n.active) continue;
+        var dx=clickX-n.x, dy=clickY-n.y;
+        if(dx*dx+dy*dy < n.hitRadius*n.hitRadius*1.5){
+          n.active=true;
+          n.activateTime=t;
+          activatedCount++;
+          keyGlow=0.3+activatedCount*0.09;
+          hintAlpha=0;
+          if(activatedCount>=8){
+            allConnected=true;
+            burstTime=t;
+          }
+          break;
+        }
+      }
+    });
+    keyAfter.addEventListener('touchstart',function(e){
+      if(allConnected) return;
+      var touch=e.touches[0];
+      var clickX=touch.clientX, clickY=touch.clientY;
+      // Find closest node within range (more forgiving on mobile)
+      var closestDist=9999,closestIdx=-1;
+      for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        if(n.active) continue;
+        var dx=clickX-n.x, dy=clickY-n.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<closestDist){closestDist=dist;closestIdx=i;}
+      }
+      if(closestIdx>=0&&closestDist<60){
+        var n=nodes[closestIdx];
+        n.active=true;
+        n.activateTime=t;
+        activatedCount++;
+        keyGlow=0.3+activatedCount*0.09;
+        hintAlpha=0;
+        if(activatedCount>=8){
+          allConnected=true;
+          burstTime=t;
+        }
+      }
+    },{passive:true});
+
+    function sz(){
+      W=c.width=c.parentElement.clientWidth;
+      H=c.height=c.parentElement.clientHeight;
+      sparkles=[];
+      for(var i=0;i<40;i++){
+        sparkles.push({
+          angle:Math.random()*Math.PI*2,
+          dist:60+Math.random()*180,
+          speed:0.005+Math.random()*0.01,
+          size:Math.random()*2.5+0.5,
+          phase:Math.random()*Math.PI*2,
+          brightness:0.3+Math.random()*0.7
+        });
+      }
+      initNodes();
+    }
+    window.addEventListener('resize',sz); sz();
+
+    function draw(){
+      t+=0.01;
+      // Dark background
+      ctx.fillStyle='#050608';
+      ctx.fillRect(0,0,W,H);
+
+      var cx=W/2, cy=H/2-H*0.02;
+      var sc=Math.min(W,H)/750;
+      var bounce=Math.sin(t*1.6)*10;
+      var sway=Math.sin(t*0.6)*0.05;
+
+      // === Outer golden light rays (behind key) - intensity based on keyGlow ===
+      var rayCount=16;
+      for(var i=0;i<rayCount;i++){
+        var angle=t*0.2+i*(Math.PI*2/rayCount);
+        var len=(150+Math.sin(t*1.5+i*0.7)*60)*sc*keyGlow*1.5;
+        var width=(6+Math.sin(t*1.2+i)*3)*sc;
+        var alpha=(0.025+Math.sin(t*2+i*0.9)*0.015)*keyGlow*2;
+
+        ctx.save();
+        ctx.translate(cx,cy+bounce*sc*0.3);
+        ctx.rotate(angle);
+        var rg=ctx.createLinearGradient(20*sc,0,len,0);
+        rg.addColorStop(0,'rgba(220,185,100,'+alpha+')');
+        rg.addColorStop(0.6,'rgba(200,165,80,'+(alpha*0.4)+')');
+        rg.addColorStop(1,'rgba(180,140,50,0)');
+        ctx.fillStyle=rg;
+        ctx.beginPath();
+        ctx.moveTo(20*sc,-width/2);
+        ctx.lineTo(len,0);
+        ctx.lineTo(20*sc,width/2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // === Inner glow - scales with keyGlow ===
+      var pulse=1+Math.sin(t*1.0)*0.2;
+      var g1=ctx.createRadialGradient(cx,cy+bounce*sc*0.3,0,cx,cy+bounce*sc*0.3,180*sc*pulse);
+      g1.addColorStop(0,'rgba(220,185,100,'+(0.07*keyGlow*2)+')');
+      g1.addColorStop(0.3,'rgba(200,165,80,'+(0.035*keyGlow*2)+')');
+      g1.addColorStop(0.6,'rgba(180,140,50,'+(0.015*keyGlow*2)+')');
+      g1.addColorStop(1,'rgba(150,110,30,0)');
+      ctx.fillStyle=g1;
+      ctx.fillRect(0,0,W,H);
+
+      // === 3D KEY ===
+      ctx.save();
+      ctx.translate(cx,cy+bounce);
+      ctx.rotate(sway);
+      ctx.scale(sc,sc);
+
+      // -- Key shadow on "ground" --
+      ctx.save();
+      ctx.scale(1,0.15);
+      ctx.translate(0,900);
+      ctx.beginPath();
+      ctx.ellipse(0,0,60,30,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,0,0,0.15)';
+      ctx.fill();
+      ctx.restore();
+
+      // -- 3D effect: draw key twice offset for depth --
+      // Back face (darker, offset)
+      ctx.save();
+      ctx.translate(2,1);
+      drawKeyShape(ctx,'#6a5518','#584812',0.4);
+      ctx.restore();
+
+      // Front face (bright gold)
+      drawKeyShape(ctx,null,null,1);
+
+      // Specular highlight on bow
+      ctx.globalAlpha=0.3;
+      ctx.beginPath();
+      ctx.ellipse(-15,-135,18,25,0.3,0,Math.PI*2);
+      var spec=ctx.createRadialGradient(-15,-135,0,-15,-135,20);
+      spec.addColorStop(0,'rgba(255,250,220,0.5)');
+      spec.addColorStop(1,'rgba(255,250,220,0)');
+      ctx.fillStyle=spec;
+      ctx.fill();
+      ctx.globalAlpha=1;
+
+      // Specular on shaft
+      ctx.globalAlpha=0.2;
+      ctx.beginPath();
+      ctx.roundRect(-1,-6,2,210,1);
+      ctx.fillStyle='rgba(255,250,230,0.6)';
+      ctx.fill();
+      ctx.globalAlpha=1;
+
+      ctx.shadowBlur=0;
+      ctx.restore();
+
+      // === Sparkle particles ===
+      for(var i=0;i<sparkles.length;i++){
+        var sp=sparkles[i];
+        sp.angle+=sp.speed;
+        var sx=cx+Math.cos(sp.angle)*sp.dist*sc;
+        var sy=cy+bounce*sc*0.3+Math.sin(sp.angle)*sp.dist*0.55*sc;
+        var so=sp.brightness*(0.15+Math.sin(t*5+sp.phase)*0.15);
+        var ss=sp.size*(0.6+Math.sin(t*3+sp.phase)*0.4);
+
+        // Sparkle cross shape
+        ctx.save();
+        ctx.translate(sx,sy);
+        ctx.rotate(t*2+sp.phase);
+        ctx.fillStyle='rgba(230,200,120,'+so+')';
+        ctx.fillRect(-ss*2,-0.5,ss*4,1);
+        ctx.fillRect(-0.5,-ss*2,1,ss*4);
+        ctx.restore();
+
+        // Glow
+        if(ss>1){
+          var sg=ctx.createRadialGradient(sx,sy,0,sx,sy,ss*4);
+          sg.addColorStop(0,'rgba(220,190,110,'+(so*0.3)+')');
+          sg.addColorStop(1,'rgba(220,190,110,0)');
+          ctx.fillStyle=sg;
+          ctx.fillRect(sx-ss*4,sy-ss*4,ss*8,ss*8);
+        }
+      }
+
+      // === BAGUA NODES & CONNECTIONS ===
+      // Draw connection lines between active nodes
+      var activeNodes=[];
+      for(var i=0;i<nodes.length;i++){
+        if(nodes[i].active) activeNodes.push(nodes[i]);
+      }
+      // Lines between consecutive active nodes
+      if(activeNodes.length>=2){
+        for(var i=0;i<nodes.length;i++){
+          var n1=nodes[i];
+          var n2=nodes[(i+1)%8];
+          if(!n1.active||!n2.active) continue;
+          // Animated line
+          var lineAge=Math.min(t-Math.max(n1.activateTime,n2.activateTime),2)/2;
+          var la=0.15*lineAge;
+          // Draw electric-style line
+          ctx.beginPath();
+          ctx.moveTo(n1.x,n1.y);
+          // Add slight curve through center area
+          var midX=(n1.x+n2.x)/2+(Math.sin(t*3+i)*8);
+          var midY=(n1.y+n2.y)/2+(Math.cos(t*2.5+i)*8);
+          ctx.quadraticCurveTo(midX,midY,n2.x,n2.y);
+          ctx.strokeStyle='rgba(220,190,100,'+la+')';
+          ctx.lineWidth=1.5;
+          ctx.stroke();
+          // Glow line
+          ctx.strokeStyle='rgba(220,190,100,'+(la*0.3)+')';
+          ctx.lineWidth=6;
+          ctx.stroke();
+        }
+        // Cross connections (star pattern) for extra visual
+        for(var i=0;i<nodes.length;i++){
+          var n1=nodes[i];
+          var n2=nodes[(i+3)%8];
+          if(!n1.active||!n2.active) continue;
+          var lineAge2=Math.min(t-Math.max(n1.activateTime,n2.activateTime),3)/3;
+          ctx.beginPath();
+          ctx.moveTo(n1.x,n1.y);
+          ctx.lineTo(n2.x,n2.y);
+          ctx.strokeStyle='rgba(180,150,80,'+(lineAge2*0.06)+')';
+          ctx.lineWidth=1;
+          ctx.stroke();
+        }
+      }
+
+      // Draw each node
+      for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        var nx=n.x, ny=n.y;
+
+        if(n.active){
+          // Active node: bright glow + symbol
+          var age=t-n.activateTime;
+          var expandPulse=age<0.5?age/0.5:1;
+          var breathe=1+Math.sin(t*3+n.pulsePhase)*0.1;
+
+          // Outer glow
+          var ng=ctx.createRadialGradient(nx,ny,0,nx,ny,35*breathe);
+          ng.addColorStop(0,'rgba(220,190,110,0.15)');
+          ng.addColorStop(0.5,'rgba(200,170,90,0.06)');
+          ng.addColorStop(1,'rgba(180,150,60,0)');
+          ctx.fillStyle=ng;
+          ctx.fillRect(nx-35,ny-35,70,70);
+
+          // Node circle
+          ctx.beginPath();
+          ctx.arc(nx,ny,12*expandPulse*breathe,0,Math.PI*2);
+          ctx.fillStyle='rgba(220,190,110,0.2)';
+          ctx.fill();
+          ctx.strokeStyle='rgba(230,200,120,0.5)';
+          ctx.lineWidth=1.5;
+          ctx.stroke();
+
+          // Symbol
+          ctx.font='16px serif';
+          ctx.textAlign='center';
+          ctx.textBaseline='middle';
+          ctx.fillStyle='rgba(240,215,140,0.8)';
+          ctx.fillText(n.symbol,nx,ny);
+        } else {
+          // Inactive node: dim, pulsing, waiting
+          var dimPulse=0.3+Math.sin(t*2+n.pulsePhase)*0.15;
+
+          // Check if mouse is near (highlight)
+          var dmx=mx-nx,dmy=my-ny;
+          var mouseDist=Math.sqrt(dmx*dmx+dmy*dmy);
+          var hover=mouseDist<40?1-mouseDist/40:0;
+
+          // Outer hint ring
+          ctx.beginPath();
+          ctx.arc(nx,ny,14+hover*4,0,Math.PI*2);
+          ctx.strokeStyle='rgba(180,160,100,'+(dimPulse*0.3+hover*0.3)+')';
+          ctx.lineWidth=1;
+          ctx.stroke();
+
+          // Inner dot
+          ctx.beginPath();
+          ctx.arc(nx,ny,3+hover*3,0,Math.PI*2);
+          ctx.fillStyle='rgba(180,160,100,'+(dimPulse*0.4+hover*0.4)+')';
+          ctx.fill();
+
+          // Symbol (faint)
+          if(hover>0.3){
+            ctx.font='14px serif';
+            ctx.textAlign='center';
+            ctx.textBaseline='middle';
+            ctx.fillStyle='rgba(200,180,120,'+(hover*0.6)+')';
+            ctx.fillText(n.symbol,nx,ny);
+          }
+        }
+      }
+
+      // === Hint text ===
+      if(hintAlpha>0.01&&!allConnected){
+        ctx.font='600 18px Inter,sans-serif';
+        ctx.textAlign='center';
+        ctx.fillStyle='rgba(212,180,120,'+(hintAlpha*0.7)+')';
+        ctx.fillText('Click the symbols to unlock the key',W/2,H*0.87);
+        ctx.font='13px Inter,sans-serif';
+        ctx.fillStyle='rgba(200,185,140,'+(hintAlpha*0.4)+')';
+        ctx.fillText('Discover your fortune today',W/2,H*0.9);
+        hintAlpha*=0.998;
+      }
+
+      // === ALL CONNECTED BURST ===
+      if(allConnected){
+        var burstAge=t-burstTime;
+        if(burstAge<5){
+          // Expanding golden burst
+          var burstR=burstAge*120;
+          var burstA=Math.max(0,0.15-burstAge*0.03);
+          var bg=ctx.createRadialGradient(cx,cy+bounce*sc*0.3,0,cx,cy+bounce*sc*0.3,burstR);
+          bg.addColorStop(0,'rgba(240,210,130,'+burstA+')');
+          bg.addColorStop(0.5,'rgba(220,185,100,'+(burstA*0.5)+')');
+          bg.addColorStop(1,'rgba(200,160,70,0)');
+          ctx.fillStyle=bg;
+          ctx.fillRect(0,0,W,H);
+        }
+        // Extra rays
+        keyGlow=Math.min(1,keyGlow+0.002);
+      }
+
+      // === Progress indicator ===
+      if(!allConnected&&activatedCount>0){
+        ctx.font='500 15px "Space Grotesk",monospace';
+        ctx.textAlign='center';
+        ctx.fillStyle='rgba(212,180,100,0.5)';
+        ctx.fillText(activatedCount+' / 8',W/2,H*0.91);
+        // Encouragement
+        var msgs=['','Keep going...','The energy flows...','Harmony awakens...','Balance emerging...','Light gathers...','Almost there...','One more...'];
+        if(activatedCount<8){
+          ctx.font='italic 13px "Cormorant Garamond",serif';
+          ctx.fillStyle='rgba(200,180,130,0.35)';
+          ctx.fillText(msgs[activatedCount]||'',W/2,H*0.935);
+        }
+      }
+      if(allConnected){
+        var completeAlpha=Math.min(1,(t-burstTime)*0.3);
+        var unlockScale=1+Math.sin(t*2)*0.05;
+        ctx.save();
+        ctx.translate(W/2,H*0.88);
+        ctx.scale(unlockScale,unlockScale);
+        ctx.font='600 22px "Cormorant Garamond",serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillStyle='rgba(230,205,140,'+(completeAlpha*0.8)+')';
+        ctx.fillText('✦  Key Unlocked  ✦',0,0);
+        ctx.restore();
+        // Show fortune popup after 2 seconds
+        if(!fortuneShown&&(t-burstTime)>2){
+          fortuneShown=true;
+          showFortunePopup();
+        }
+      }
+
+      // === Floating golden dust ===
+      for(var i=0;i<30;i++){
+        var dx=cx+(Math.sin(t*0.3+i*2.1)-0.5)*W*0.6;
+        var dy=H*0.1+Math.sin(t*0.2+i*1.7)*H*0.8;
+        dy=(dy+t*20*((i%3)+1))%H;
+        var da=0.05+Math.sin(t*2+i)*0.05;
+        ctx.beginPath();
+        ctx.arc(dx,dy,0.8,0,Math.PI*2);
+        ctx.fillStyle='rgba(200,175,110,'+da+')';
+        ctx.fill();
+      }
+
+      // === Mouse golden light ===
+      // Smooth mouse position
+      if(mx>0){
+        mxSmooth+=(mx-mxSmooth)*0.08;
+        mySmooth+=(my-mySmooth)*0.08;
+      } else {
+        mxSmooth+=(W/2-mxSmooth)*0.02;
+        mySmooth+=(H/2-mySmooth)*0.02;
+      }
+      if(mxSmooth>0&&mySmooth>0){
+        // Large soft golden light following mouse
+        var mg1=ctx.createRadialGradient(mxSmooth,mySmooth,0,mxSmooth,mySmooth,200);
+        mg1.addColorStop(0,'rgba(220,185,100,0.08)');
+        mg1.addColorStop(0.3,'rgba(200,165,80,0.04)');
+        mg1.addColorStop(0.6,'rgba(180,140,50,0.015)');
+        mg1.addColorStop(1,'rgba(150,110,30,0)');
+        ctx.fillStyle=mg1;
+        ctx.fillRect(mxSmooth-200,mySmooth-200,400,400);
+
+        // Smaller bright core
+        var mg2=ctx.createRadialGradient(mxSmooth,mySmooth,0,mxSmooth,mySmooth,60);
+        mg2.addColorStop(0,'rgba(240,210,130,0.1)');
+        mg2.addColorStop(0.5,'rgba(220,190,100,0.04)');
+        mg2.addColorStop(1,'rgba(200,170,80,0)');
+        ctx.fillStyle=mg2;
+        ctx.fillRect(mxSmooth-60,mySmooth-60,120,120);
+
+        // Tiny sparkles near cursor
+        for(var i=0;i<6;i++){
+          var sa2=t*3+i*1.05;
+          var sd=15+Math.sin(t*4+i*2)*10;
+          var sx2=mxSmooth+Math.cos(sa2)*sd;
+          var sy2=mySmooth+Math.sin(sa2)*sd;
+          var so2=0.2+Math.sin(t*6+i*1.5)*0.15;
+          ctx.beginPath();ctx.arc(sx2,sy2,1,0,Math.PI*2);
+          ctx.fillStyle='rgba(240,215,130,'+so2+')';
+          ctx.fill();
+        }
+      }
+
+      // === Vignette ===
+      var vig=ctx.createRadialGradient(W/2,H/2,W*0.2,W/2,H/2,W*0.6);
+      vig.addColorStop(0,'rgba(0,0,0,0)');
+      vig.addColorStop(1,'rgba(3,4,6,0.5)');
+      ctx.fillStyle=vig;
+      ctx.fillRect(0,0,W,H);
+
+      requestAnimationFrame(draw);
+    }
+
+    function drawKeyShape(ctx,color1,color2,alpha){
+      ctx.globalAlpha=alpha;
+      var isShadow=!!color1;
+
+      // Gold gradients
+      var kg,kg2,kg3;
+      if(isShadow){
+        kg=color1; kg2=color2; kg3=color1;
+      } else {
+        // Main gold - left-lit
+        kg=ctx.createLinearGradient(-55,-180,55,200);
+        kg.addColorStop(0,'#faecc8');
+        kg.addColorStop(0.15,'#f0d898');
+        kg.addColorStop(0.35,'#dcc068');
+        kg.addColorStop(0.55,'#c9a84c');
+        kg.addColorStop(0.75,'#a88a30');
+        kg.addColorStop(1,'#7a6018');
+        // Accent gold
+        kg2=ctx.createLinearGradient(50,-180,-50,200);
+        kg2.addColorStop(0,'#d8b850');
+        kg2.addColorStop(0.5,'#c4a040');
+        kg2.addColorStop(1,'#987828');
+        // Highlight gold
+        kg3=ctx.createLinearGradient(-20,-180,20,200);
+        kg3.addColorStop(0,'#fff8e0');
+        kg3.addColorStop(0.5,'#f0d890');
+        kg3.addColorStop(1,'#c8a848');
+
+        ctx.shadowColor='rgba(212,175,80,0.6)';
+        ctx.shadowBlur=35;
+      }
+
+      // === BOW (top ornate ring) ===
+      // Outer ring - thick with bevel
+      ctx.lineWidth=12;
+      ctx.strokeStyle=kg;
+      ctx.beginPath();ctx.ellipse(0,-120,54,58,0,0,Math.PI*2);ctx.stroke();
+      // Outer ring highlight edge
+      if(!isShadow){
+        ctx.lineWidth=2;ctx.strokeStyle='rgba(255,248,220,0.25)';
+        ctx.beginPath();ctx.ellipse(0,-120,48,52,0,Math.PI*0.8,Math.PI*1.8);ctx.stroke();
+        ctx.lineWidth=1.5;ctx.strokeStyle='rgba(100,80,30,0.3)';
+        ctx.beginPath();ctx.ellipse(0,-120,60,64,0,Math.PI*1.8,Math.PI*0.8);ctx.stroke();
+      }
+
+      // Middle ring
+      ctx.lineWidth=5;ctx.strokeStyle=kg2;
+      ctx.beginPath();ctx.ellipse(0,-120,38,42,0,0,Math.PI*2);ctx.stroke();
+
+      // Inner ring
+      ctx.lineWidth=3;ctx.strokeStyle=kg;
+      ctx.beginPath();ctx.ellipse(0,-120,24,28,0,0,Math.PI*2);ctx.stroke();
+
+      // Center gem with radial gradient
+      if(!isShadow){
+        var gem=ctx.createRadialGradient(-3,-123,0,0,-120,10);
+        gem.addColorStop(0,'#fff8e0');gem.addColorStop(0.3,'#f0d080');
+        gem.addColorStop(0.7,'#c8a040');gem.addColorStop(1,'#a08030');
+        ctx.beginPath();ctx.arc(0,-120,9,0,Math.PI*2);ctx.fillStyle=gem;ctx.fill();
+        // Gem highlight
+        ctx.beginPath();ctx.arc(-2,-122,3,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,250,230,0.4)';ctx.fill();
+      } else {
+        ctx.beginPath();ctx.arc(0,-120,9,0,Math.PI*2);ctx.fillStyle=kg;ctx.fill();
+      }
+
+      // Decorative dots with mini-highlights
+      [[-44,-158],[44,-158],[-44,-82],[44,-82],[0,-176]].forEach(function(d){
+        ctx.beginPath();ctx.arc(d[0],d[1],4.5,0,Math.PI*2);ctx.fillStyle=kg;ctx.fill();
+        if(!isShadow){
+          ctx.beginPath();ctx.arc(d[0]-1,d[1]-1,1.5,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,248,220,0.3)';ctx.fill();
+        }
+      });
+
+      // Filigree arcs between dots (ornate detail)
+      if(!isShadow){
+        ctx.lineWidth=1.2;ctx.strokeStyle='rgba(200,170,80,0.2)';
+        // Top arcs
+        ctx.beginPath();ctx.arc(0,-120,50,Math.PI*1.15,Math.PI*1.35);ctx.stroke();
+        ctx.beginPath();ctx.arc(0,-120,50,Math.PI*1.65,Math.PI*1.85);ctx.stroke();
+        ctx.beginPath();ctx.arc(0,-120,50,Math.PI*0.15,Math.PI*0.35);ctx.stroke();
+        ctx.beginPath();ctx.arc(0,-120,50,Math.PI*0.65,Math.PI*0.85);ctx.stroke();
+      }
+
+      // === SHAFT ===
+      // Main shaft body
+      ctx.fillStyle=kg;
+      ctx.beginPath();ctx.roundRect(-7,-8,14,220,4);ctx.fill();
+
+      // 3D bevel: left highlight
+      if(!isShadow){
+        ctx.fillStyle='rgba(255,248,220,0.15)';
+        ctx.beginPath();ctx.roundRect(-7,-8,4,220,2);ctx.fill();
+        // Right shadow
+        ctx.fillStyle='rgba(60,45,15,0.2)';
+        ctx.beginPath();ctx.roundRect(4,-8,3,220,1);ctx.fill();
+        // Center bright line
+        ctx.fillStyle='rgba(255,245,210,0.12)';
+        ctx.beginPath();ctx.roundRect(-1.5,-8,3,220,1);ctx.fill();
+      }
+
+      // Decorative bands with bevel
+      ctx.fillStyle=kg2;
+      [12,70,128].forEach(function(y){
+        ctx.beginPath();ctx.roundRect(-12,y,24,8,3);ctx.fill();
+        if(!isShadow){
+          // Band highlight
+          ctx.fillStyle='rgba(255,245,210,0.15)';
+          ctx.beginPath();ctx.roundRect(-12,y,24,2.5,1);ctx.fill();
+          ctx.fillStyle=kg2;
+        }
+      });
+
+      // === KEY BIT (teeth) - more detailed ===
+      ctx.fillStyle=kg;
+      ctx.beginPath();
+      ctx.moveTo(7,210);ctx.lineTo(32,210);ctx.lineTo(32,228);
+      ctx.lineTo(22,228);ctx.lineTo(22,244);ctx.lineTo(36,244);
+      ctx.lineTo(36,262);ctx.lineTo(22,262);ctx.lineTo(22,278);
+      ctx.lineTo(32,278);ctx.lineTo(32,302);ctx.lineTo(7,302);
+      ctx.closePath();ctx.fill();
+
+      // Teeth bevel highlights
+      if(!isShadow){
+        ctx.fillStyle='rgba(255,245,210,0.12)';
+        ctx.fillRect(7,210,3,92);
+        ctx.fillStyle='rgba(60,45,15,0.15)';
+        ctx.fillRect(29,210,3,18);ctx.fillRect(33,244,3,18);ctx.fillRect(29,278,3,24);
+      }
+
+      // Ward notch
+      ctx.fillStyle=kg2;
+      ctx.beginPath();ctx.roundRect(-16,210,10,28,3);ctx.fill();
+      if(!isShadow){
+        ctx.fillStyle='rgba(255,245,210,0.1)';
+        ctx.beginPath();ctx.roundRect(-16,210,3,28,1);ctx.fill();
+      }
+
+      // === Collar (transition from bow to shaft) ===
+      ctx.fillStyle=kg;
+      ctx.beginPath();ctx.roundRect(-11,-12,22,10,3);ctx.fill();
+      if(!isShadow){
+        ctx.fillStyle='rgba(255,245,210,0.12)';
+        ctx.beginPath();ctx.roundRect(-11,-12,22,3,1);ctx.fill();
+      }
+
+      ctx.globalAlpha=1;
+      ctx.shadowBlur=0;
+    }
+
+    draw();
+  }
+}();
+
+/* ===== SCROLL FADE for landing text ===== */
+!function(){
+  var lt=document.getElementById('lt'),sc=document.getElementById('scroll-cue');
+  function upd(){
+    var p=Math.min(window.scrollY/(window.innerHeight*.6),1);
+    if(lt) lt.style.opacity=Math.max(0,1-p*3);
+    if(sc) sc.style.opacity=Math.max(0,1-p*5);
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  upd();
+}();
+
+/* old canvas code removed - start dead block */
+void function(){ return; void function mkp(){
+    ps=[];var n=Math.min(Math.floor(W*H/12000),90);
+    for(var i=0;i<n;i++) ps.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.4,sx:(Math.random()-.5)*.2,sy:(Math.random()-.5)*.1,o:Math.random()*.2+.04,ph:Math.random()*6.28});
+  }
+  function draw(){
+    t+=.012; x.clearRect(0,0,W,H);
+    var surfY=H*0.52; // water surface line
+
+    // === SKY / Upper area (dark atmosphere) ===
+    var sky=x.createLinearGradient(0,0,0,surfY);
+    sky.addColorStop(0,'#040610');
+    sky.addColorStop(.6,'#081020');
+    sky.addColorStop(1,'#0c1828');
+    x.fillStyle=sky; x.fillRect(0,0,W,surfY);
+
+    // === WATER / Lower area ===
+    var water=x.createLinearGradient(0,surfY,0,H);
+    water.addColorStop(0,'#0a1424');
+    water.addColorStop(.3,'#081018');
+    water.addColorStop(1,'#040810');
+    x.fillStyle=water; x.fillRect(0,surfY,W,H-surfY);
+
+    // === Surface shimmer line ===
+    for(var i=0;i<3;i++){
+      x.beginPath();
+      var sy2=surfY+i*1.5;
+      x.moveTo(0,sy2);
+      for(var px=0;px<=W;px+=3){
+        var wave=Math.sin(px*.008+t*(1.2+i*.3))*3+Math.sin(px*.015+t*.8)*1.5;
+        x.lineTo(px,sy2+wave);
+      }
+      x.strokeStyle='rgba(160,145,100,'+(0.06-i*.015)+')';
+      x.lineWidth=1.5-i*.3;
+      x.stroke();
+    }
+
+    // === Underwater waves ===
+    for(var l=0;l<3;l++){
+      x.beginPath();
+      var baseY=surfY+40+l*H*.12,amp=12+l*6,freq=.0025-l*.0003,spd=t*(.4+l*.12);
+      x.moveTo(0,H);
+      for(var px=0;px<=W;px+=5){
+        var y=baseY+Math.sin(px*freq+spd)*amp+Math.sin(px*freq*2.2+spd*.6)*amp*.3;
+        x.lineTo(px,y);
+      }
+      x.lineTo(W,H);x.closePath();
+      x.fillStyle='rgba(10,25,45,'+(0.02+l*.008)+')';x.fill();
+    }
+
+    // === Light caustics underwater ===
+    for(var i=0;i<5;i++){
+      var cx=W*(.15+Math.sin(t*.22+i*1.1)*.35);
+      var cy=surfY+H*.15+Math.cos(t*.18+i*.7)*H*.1;
+      var cr=70+Math.sin(t*.38+i)*30;
+      var cg=x.createRadialGradient(cx,cy,0,cx,cy,cr);
+      cg.addColorStop(0,'rgba(170,145,80,.02)');
+      cg.addColorStop(1,'rgba(170,145,80,0)');
+      x.fillStyle=cg;x.fillRect(0,surfY,W,H-surfY);
+    }
+
+    // === Atmospheric caustics above water ===
+    for(var i=0;i<3;i++){
+      var cx=W*(.3+Math.sin(t*.15+i*2)*.25);
+      var cy=H*.2+Math.cos(t*.12+i)*.08*H;
+      var cr=100+Math.sin(t*.3+i)*40;
+      var cg=x.createRadialGradient(cx,cy,0,cx,cy,cr);
+      cg.addColorStop(0,'rgba(140,120,70,.015)');
+      cg.addColorStop(1,'rgba(140,120,70,0)');
+      x.fillStyle=cg;x.fillRect(0,0,W,surfY);
+    }
+
+    // === Floating particles (above water - dust) ===
+    for(var i=0;i<ps.length;i++){
+      var p=ps[i];
+      p.x+=p.sx+Math.sin(t*.4+p.ph)*.1;
+      p.y+=p.sy+Math.cos(t*.28+p.ph)*.06;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      var op=p.o*(.5+Math.sin(t*1.4+p.ph)*.5);
+      // dimmer if underwater
+      if(p.y>surfY) op*=.4;
+      x.beginPath();x.arc(p.x,p.y,p.r,0,6.28);
+      x.fillStyle='rgba(190,175,130,'+op+')';x.fill();
+    }
+
+    // === Central golden glow (where key is) ===
+    var gx=W/2,gy=surfY*.85;
+    var pulse=1+Math.sin(t*.6)*.06;
+    var gl=x.createRadialGradient(gx,gy,0,gx,gy,160*pulse);
+    gl.addColorStop(0,'rgba(212,168,83,.05)');
+    gl.addColorStop(.35,'rgba(212,168,83,.02)');
+    gl.addColorStop(1,'rgba(212,168,83,0)');
+    x.fillStyle=gl;x.fillRect(0,0,W,H);
+
+    // === Reflection glow under water ===
+    var rgl=x.createRadialGradient(gx,surfY+H*.12,0,gx,surfY+H*.12,120*pulse);
+    rgl.addColorStop(0,'rgba(180,150,70,.025)');
+    rgl.addColorStop(1,'rgba(180,150,70,0)');
+    x.fillStyle=rgl;x.fillRect(0,surfY,W,H-surfY);
+
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',sz);sz();draw();
+
+  // Ripples on mouse/touch
+  var ripples=[];
+  document.getElementById('landing').addEventListener('mousemove',function(e){
+    if(Math.random()>.8) ripples.push({x:e.clientX,y:e.clientY,r:0,mr:50+Math.random()*40,o:.1,sp:1+Math.random()});
+  });
+  document.getElementById('landing').addEventListener('touchmove',function(e){
+    var touch=e.touches[0];
+    if(Math.random()>.6) ripples.push({x:touch.clientX,y:touch.clientY,r:0,mr:40+Math.random()*30,o:.08,sp:.8+Math.random()});
+  },{passive:true});
+  !function rip(){
+    for(var i=ripples.length-1;i>=0;i--){
+      var r=ripples[i];r.r+=r.sp;r.o*=.96;
+      if(r.o<.002||r.r>r.mr){ripples.splice(i,1);continue}
+      x.beginPath();x.arc(r.x,r.y,r.r,0,6.28);
+      x.strokeStyle='rgba(170,150,95,'+r.o+')';x.lineWidth=1;x.stroke();
+    }
+    requestAnimationFrame(rip);
+  }();
+}();
+
+/* KEY SCROLL ZOOM now handled by Three.js in landing3d.js */
+
+/* ===== NAV ===== */
+!function(){
+  var nav=document.getElementById('nav'),links=nav.querySelectorAll('.nv-links a');
+  var secs=['about','news','research','exhibition'];
+  function upd(){
+    var sy=window.scrollY,vh=window.innerHeight;
+    nav.classList.toggle('show',sy>vh*.45);
+    var cur='';
+    secs.forEach(function(id){var el=document.getElementById(id);if(el&&sy>=el.offsetTop-vh*.35) cur=id});
+    links.forEach(function(a){a.classList.toggle('on',a.getAttribute('data-s')===cur)});
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  links.forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();var el=document.querySelector(a.getAttribute('href'));if(el) el.scrollIntoView({behavior:'smooth'})});
+  });
+  document.getElementById('logo').addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})});
+  upd();
+}();
+
+/* ===== TAG FILTER ===== */
+!function(){
+  var tags=document.querySelectorAll('.tag'),pubs=document.querySelectorAll('.pub');
+  tags.forEach(function(b){
+    b.addEventListener('click',function(){
+      tags.forEach(function(t){t.classList.remove('on')});b.classList.add('on');
+      var f=b.getAttribute('data-t');
+      pubs.forEach(function(p){p.classList.toggle('hide',f!=='all'&&p.getAttribute('data-t')!==f)});
+    });
+  });
+}();
+
+/* ===== CURSOR GLOW ===== */
+!function(){
+  if(!window.matchMedia('(pointer:fine)').matches)return;
+  var g=document.createElement('div');
+  g.style.cssText='position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,.06)0%,rgba(212,168,83,.025)30%,transparent 70%);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);will-change:left,top;';
+  document.body.appendChild(g);
+  document.addEventListener('mousemove',function(e){g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'});
+}();
+
+/* ===== EXHIBITION MODAL ===== */
+var exhData={
+  'louvre':{
+    title:'A Manifesto II, Paris',
+    venue:'Carrousel du Louvre, Paris',
+    date:'February 8, 2025',
+    imgs:['assets/images/exhibition/louvre.jpeg','assets/images/exhibition/louvre-2.jpeg','assets/images/exhibition/louvre-3.jpeg','assets/images/exhibition/louvre-4.jpeg'],
+    desc:'<p>"A Manifesto II, Paris" was inaugurated as part of the Third International Art Collaborative Exhibition at the prestigious Carrousel du Louvre. Building on the 2023 exhibition "Boundless Borders, Marginalized Voices: A Manifesto", this iteration reaffirms its commitment to artistic agency and cultural intersection, celebrating the fundamental freedom of artistic expression.</p><p>Jointly organized by the World Federation of UNESCO Associations (WFUCA) and the Association for Franco-Chinese Exchange (A.D.E.F.C.), the exhibition was curated by Tingting Fang, Director of the Asian Academy of Arts. The show brought together emerging artists from around the globe, weaving together cross-cultural narratives through contemporary art practices.</p><p>The exhibition served as a vital platform for creative discourse and international artistic exchange, continuing the "Manifesto" series\' intellectual trajectory while deepening the breadth and depth of cross-cultural dialogue.</p>'
+  },
+  'british-museum':{
+    title:'Art and Making',
+    venue:'The British Museum, London',
+    date:'March 4, 2026',
+    imgs:['assets/images/exhibition/british-museum.jpeg','assets/images/exhibition/british-museum-2.jpeg','assets/images/exhibition/british-museum-3.jpeg','assets/images/exhibition/british-museum-4.jpeg'],
+    desc:'<p>The "Art and Making: Material Culture, Craft and Emerging Practices" forum was held at the British Museum\'s BP Theatre and East Foyer. The forum explored three core themes — material, craft, and cross-cultural translation — examining how contemporary practitioners position their work between material culture traditions and the global context.</p><p>In her opening address, Director Tingting Fang posed a fundamental question: can "making" be understood as a form of knowledge production in contemporary art? She argued that when artists interact with materials, respond to feedback, and continuously adjust, thinking may be generated within the process itself.</p><p>The event featured keynote presentations and a roundtable discussion, bringing together perspectives from artistic practice and curatorial research to explore new-generation creative methodologies across cultural boundaries.</p>'
+  },
+  'oxford':{
+    title:'Contemporary Practice II',
+    venue:'University of Oxford, Centenary Room',
+    date:'March 2, 2026',
+    imgs:['assets/images/exhibition/oxford.jpeg'],
+    desc:'<p>"Contemporary Practice II: Making Meaning — Craft, Generation, and Responsibility in Contemporary Art Practice" was held at Oxford University\'s Centenary Room. The forum explored how contemporary creators position their practice between historical tradition, personal experience, and global context.</p><p>Dr. Fiona Whitehead, Head of the Internship Office at Oxford, opened the event by noting that making is never merely a technical act — it is about choice, responsibility, and value judgment. She emphasized that in a constantly changing global environment, questions about the nature and position of "making" in contemporary art need to be reconsidered.</p>'
+  },
+  'hk-art-expo':{
+    title:'Resound, Asian Innovators: A Manifesto',
+    venue:'Asia World-Expo, Hong Kong',
+    date:'May 16, 2024',
+    imgs:['assets/images/exhibition/hk-art-expo.jpeg','assets/images/exhibition/hk-art-expo-2.jpeg','assets/images/exhibition/hk-art-expo-3.jpeg','assets/images/exhibition/hk-art-expo-4.jpeg'],
+    desc:'<p>At the 2nd Art Hong Kong Expo, the "Resound, Asian Innovators: A Manifesto" exhibition presented over 100 contemporary artworks from more than 50 artists from China, the United Kingdom, the United States, and South Korea.</p><p>As the largest comprehensive art section of the entire expo, the exhibition featured sculptures, paintings, light installations, and digital art videos — showcasing the diversity and vitality of contemporary Asian art practices on a world stage.</p><p>The "Resound" exhibition served as an independent art unit within the expo, continuing the action call of the original "Manifesto" series, taking the convergence of civilizations as its entry point and advocating for the original free form of art.</p>'
+  }
+};
+
+window.openExhibition=function(id){
+  var d=exhData[id];if(!d)return;
+  var modal=document.getElementById('exh-modal');
+  var card=document.getElementById('exh-modal-card');
+  // Build image gallery
+  var imgHtml='<img src="'+d.imgs[0]+'" style="width:100%;height:280px;object-fit:cover;border-radius:10px;margin-bottom:12px" alt="'+d.title+'">';
+  if(d.imgs.length>1){
+    imgHtml+='<div style="display:grid;grid-template-columns:repeat('+(d.imgs.length-1)+',1fr);gap:8px;margin-bottom:20px">';
+    for(var ii=1;ii<d.imgs.length;ii++){
+      imgHtml+='<img src="'+d.imgs[ii]+'" style="width:100%;height:140px;object-fit:cover;border-radius:8px" alt="">';
+    }
+    imgHtml+='</div>';
+  } else { imgHtml+='<div style="margin-bottom:20px"></div>'; }
+  card.innerHTML=imgHtml
+    +'<div style="font-family:Cormorant Garamond,serif;font-size:1.6rem;color:#f5f0eb;margin-bottom:6px">'+d.title+'</div>'
+    +'<div style="font-size:.75rem;color:#d4a853;margin-bottom:4px">'+d.venue+'</div>'
+    +'<div style="font-size:.68rem;color:rgba(245,240,235,.4);margin-bottom:18px">'+d.date+'</div>'
+    +'<div style="font-size:.85rem;line-height:1.75;color:rgba(245,240,235,.65)">'+d.desc+'</div>'
+    +'<button onclick="closeExhibition()" style="margin-top:20px;padding:8px 24px;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.3);border-radius:20px;color:rgba(245,240,235,.7);font-size:.75rem;cursor:pointer;letter-spacing:.08em;transition:all .3s" onmouseover="this.style.borderColor=\'#d4a853\';this.style.color=\'#d4a853\'" onmouseout="this.style.borderColor=\'rgba(212,168,83,.3)\';this.style.color=\'rgba(245,240,235,.7)\'">Close</button>';
+  modal.style.display='block';
+  setTimeout(function(){
+    modal.style.background='rgba(0,0,0,.7)';
+    card.style.transform='translateY(0)';card.style.opacity='1';
+  },30);
+  modal.onclick=function(e){if(e.target===modal)closeExhibition()};
+};
+window.closeExhibition=function(){
+  var modal=document.getElementById('exh-modal');
+  var card=document.getElementById('exh-modal-card');
+  card.style.transform='translateY(20px)';card.style.opacity='0';
+  modal.style.background='rgba(0,0,0,0)';
+  setTimeout(function(){modal.style.display='none'},500);
+};
+</script>
+</body>
+</html>
