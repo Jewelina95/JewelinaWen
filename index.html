@@ -230,6 +230,15 @@ footer{padding:32px 44px;border-top:1px solid rgba(255,255,255,.05);background:#
     onmouseout="this.style.borderColor='rgba(212,168,83,0.3)';this.style.color='rgba(245,240,235,0.7)'">
     &#x21bb; Replay
   </button>
+  <button id="level2-btn" style="display:none;position:absolute;top:24px;right:140px;z-index:20;
+    padding:8px 18px;background:rgba(212,168,83,0.15);border:1px solid rgba(212,168,83,0.4);
+    border-radius:20px;color:#d4a853;font-family:'Inter',sans-serif;font-size:0.72rem;
+    letter-spacing:0.1em;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:all 0.3s;text-transform:uppercase;font-weight:600"
+    onmouseover="this.style.background='rgba(212,168,83,0.25)'"
+    onmouseout="this.style.background='rgba(212,168,83,0.15)'">
+    ⚔️ Light Blade
+  </button>
   <div id="lt" style="z-index:10;position:absolute;bottom:10%;left:5%">
     <span class="lt-sub">the key to</span>
     <span class="lt-main">Jewelina's World</span>
@@ -456,6 +465,8 @@ if(landingEl) initLanding(landingEl);
       vid.style.display='none';
       showKey();
       if(replayBtn) replayBtn.style.display='block';
+      var l2b=document.getElementById('level2-btn');
+      if(l2b){ l2b.style.display='block'; l2b.onclick=function(){ startLightChaser(); }; }
     },1500);
   });
 
@@ -727,7 +738,7 @@ if(landingEl) initLanding(landingEl);
       closeBtn.onclick=function(){
         card.style.transform='scale(0.9) translateY(10px)';card.style.opacity='0';
         overlay.style.background='rgba(0,0,0,0)';
-        setTimeout(function(){ overlay.remove(); showLevel2Prompt(); },600);
+        setTimeout(function(){ overlay.remove(); },600);
       };
       // Level 2 button
       var l2Btn=document.getElementById('fortune-level2');
@@ -800,9 +811,12 @@ if(landingEl) initLanding(landingEl);
       var shakeAmount=0;
       var gameOver=false;
 
-      // Countdown
-      var countdownPhase=3;
-      var countdownStart=Date.now();
+      // Tutorial phases: 0=title, 1=slash normal, 2=golden, 3=bomb, 4=go!
+      var tutPhase=0;
+      var tutStart=Date.now();
+      var tutMoved=false;
+      var tutSlashed=false;
+      var tutRune=null; // tutorial rune to practice on
 
       // Mouse trail (light blade)
       var trail=[];
@@ -813,8 +827,14 @@ if(landingEl) initLanding(landingEl);
       var runes=[];
       var explosions=[];
 
-      // Rune symbols
-      var runeChars=['卦','道','气','元','灵','阴','阳','命','缘','禅','空','悟','明','心','法','玄'];
+      // Rune symbols with English
+      var runeData=[
+        {ch:'卦',en:'Hexagram'},{ch:'道',en:'Tao'},{ch:'气',en:'Qi'},
+        {ch:'元',en:'Origin'},{ch:'灵',en:'Spirit'},{ch:'阴',en:'Yin'},
+        {ch:'阳',en:'Yang'},{ch:'命',en:'Fate'},{ch:'缘',en:'Bond'},
+        {ch:'禅',en:'Zen'},{ch:'空',en:'Void'},{ch:'悟',en:'Awaken'},
+        {ch:'明',en:'Light'},{ch:'心',en:'Heart'},{ch:'法',en:'Dharma'},{ch:'玄',en:'Mystery'}
+      ];
 
       var energyLevels=[
         {min:0,level:'初窥门径 · Novice Seeker',cn:'你的灵觉正在觉醒，光之旅才刚刚开始。保持好奇心，宇宙的奥秘将向你敞开。',en:'Your spiritual awareness is just awakening. Stay curious — the mysteries of the universe are opening to you.'},
@@ -824,17 +844,19 @@ if(landingEl) initLanding(landingEl);
         {min:100,level:'天人合一 · One with the Cosmos',cn:'传说级的存在！你已超越凡尘，达到天人合一的境界。光与影在你手中如臂使指。',en:'A legendary being! You have transcended the mundane. Light and shadow bend to your will.'}
       ];
 
-      function spawnRune(){
-        var isBomb=Math.random()>0.85;
-        var isGolden=!isBomb&&Math.random()>0.88;
+      function spawnRune(forceType,forceX){
+        var isBomb=forceType==='bomb'?true:(forceType?false:Math.random()>0.85);
+        var isGolden=forceType==='golden'?true:(!isBomb&&!forceType&&Math.random()>0.88);
+        var rd=runeData[Math.floor(Math.random()*runeData.length)];
         runes.push({
-          x:60+Math.random()*(GW-120),
+          x:forceX||(60+Math.random()*(GW-120)),
           y:GH+30,
           vy:-(2.5+Math.random()*2.5),
           vx:(Math.random()-0.5)*1.5,
           r:isBomb?28:(isGolden?26:20+Math.random()*6),
           type:isBomb?'bomb':(isGolden?'golden':'normal'),
-          char:runeChars[Math.floor(Math.random()*runeChars.length)],
+          char:rd.ch,
+          charEn:rd.en,
           rotation:Math.random()*Math.PI*2,
           rotSpeed:(Math.random()-0.5)*0.04,
           slashed:false,
@@ -890,7 +912,7 @@ if(landingEl) initLanding(landingEl);
       // Mouse/touch handlers
       function onMove(x,y){
         bmx=x;bmy=y;
-        if(bladeActive&&!gameOver&&countdownPhase<=0){
+        if(bladeActive&&!gameOver){
           trail.push({x:x,y:y,t:Date.now()});
           if(trail.length>40) trail.shift();
           checkSlash();
@@ -927,31 +949,121 @@ if(landingEl) initLanding(landingEl);
         for(var gx=0;gx<GW;gx+=60){gctx.beginPath();gctx.moveTo(gx,0);gctx.lineTo(gx,GH);gctx.stroke()}
         for(var gy=0;gy<GH;gy+=60){gctx.beginPath();gctx.moveTo(0,gy);gctx.lineTo(GW,gy);gctx.stroke()}
 
-        // === COUNTDOWN ===
-        if(countdownPhase>0){
-          var elapsed=(Date.now()-countdownStart)/1000;
-          var num=Math.ceil(3-elapsed);
-          if(num<=0){countdownPhase=0;startTime=Date.now()}
-          else{
-            var sc2=1+(elapsed%1)*0.3;
-            var al=1-(elapsed%1);
-            gctx.font='bold '+Math.floor(80*sc2)+'px "Cormorant Garamond",serif';
-            gctx.textAlign='center';gctx.textBaseline='middle';
-            gctx.fillStyle='rgba(212,168,83,'+al+')';
-            gctx.fillText(num,GW/2,GH/2-20);
-            gctx.font='20px Inter,sans-serif';
-            gctx.fillStyle='rgba(212,168,83,0.5)';
-            gctx.fillText('光刃 Light Blade',GW/2,GH/2+50);
+        // === INTERACTIVE TUTORIAL ===
+        if(tutPhase<5){
+          gctx.textAlign='center';gctx.textBaseline='middle';
+          var pulse=0.6+Math.sin(gt*3)*0.2;
+
+          if(tutPhase===0){
+            // Title screen
+            gctx.font='bold 36px "Cormorant Garamond",serif';
+            gctx.fillStyle='rgba(212,168,83,0.8)';
+            gctx.fillText('光刃 Light Blade',GW/2,GH/2-30);
+            gctx.font='14px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
+            gctx.fillText('Move your mouse or touch to continue',GW/2,GH/2+20);
+            if(bmx>0&&!tutMoved){tutMoved=true}
+            if(tutMoved&&Date.now()-tutStart>800){tutPhase=1;tutStart=Date.now();tutMoved=false;tutSlashed=false;
+              spawnRune('normal',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
+            }
+          } else if(tutPhase===1){
+            // Teach: normal rune
+            gctx.font='600 16px Inter,sans-serif';
+            gctx.fillStyle='rgba(220,190,120,0.7)';
+            gctx.fillText('Golden Rune = +1 point',GW/2,GH*0.2);
             gctx.font='13px Inter,sans-serif';
-            gctx.fillStyle='rgba(200,185,140,0.3)';
-            gctx.fillText('Hold & drag to slash · Slice the rising runes',GW/2,GH/2+78);
+            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
+            gctx.fillText('Hold & drag across it to slash!',GW/2,GH*0.2+28);
+            // Draw the tutorial rune
+            if(tutRune&&!tutRune.slashed){
+              tutRune.y=GH/2;tutRune.decay=0;
+            } else if(tutRune&&tutRune.slashed){
+              // Slashed! Move to next
+              if(!tutSlashed){tutSlashed=true;tutStart=Date.now()}
+              gctx.font='600 18px Inter,sans-serif';
+              gctx.fillStyle='rgba(120,220,150,0.8)';
+              gctx.fillText('Great!',GW/2,GH/2);
+              if(Date.now()-tutStart>1000){tutPhase=2;tutStart=Date.now();tutSlashed=false;
+                spawnRune('golden',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
+              }
+            }
+          } else if(tutPhase===2){
+            // Teach: golden rune
+            gctx.font='600 16px Inter,sans-serif';
+            gctx.fillStyle='rgba(255,210,80,0.8)';
+            gctx.fillText('✦ Golden Rune = 5x points!',GW/2,GH*0.2);
+            gctx.font='13px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
+            gctx.fillText('Slash it for bonus points!',GW/2,GH*0.2+28);
+            if(tutRune&&!tutRune.slashed){tutRune.y=GH/2;tutRune.decay=0}
+            else if(tutRune&&tutRune.slashed){
+              if(!tutSlashed){tutSlashed=true;tutStart=Date.now()}
+              gctx.font='600 18px Inter,sans-serif';
+              gctx.fillStyle='rgba(255,210,80,0.8)';
+              gctx.fillText('+5 Bonus!',GW/2,GH/2);
+              if(Date.now()-tutStart>1000){tutPhase=3;tutStart=Date.now();tutSlashed=false;
+                spawnRune('bomb',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
+              }
+            }
+          } else if(tutPhase===3){
+            // Teach: bomb
+            gctx.font='600 16px Inter,sans-serif';
+            gctx.fillStyle='rgba(220,60,80,0.8)';
+            gctx.fillText('⚠ Red Rune = BOMB! Don\'t slash!',GW/2,GH*0.2);
+            gctx.font='13px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
+            gctx.fillText('Avoid it! Move your cursor away.',GW/2,GH*0.2+28);
+            if(tutRune&&!tutRune.slashed){tutRune.y=GH/2;tutRune.decay=0}
+            if(tutRune&&tutRune.slashed){
+              gctx.font='600 16px Inter,sans-serif';
+              gctx.fillStyle='rgba(220,60,60,0.8)';
+              gctx.fillText('Oops! -8 points. Avoid red ones!',GW/2,GH/2+50);
+            }
+            // Auto advance after 3 seconds
+            if(Date.now()-tutStart>3500){tutPhase=4;tutStart=Date.now();runes=[];score=0;combo=0}
+          } else if(tutPhase===4){
+            // GO!
+            var goElapsed=(Date.now()-tutStart)/1000;
+            if(goElapsed<1.5){
+              var sc3=1+goElapsed*0.4;
+              var al2=1-goElapsed/1.5;
+              gctx.font='bold '+Math.floor(70*sc3)+'px "Cormorant Garamond",serif';
+              gctx.fillStyle='rgba(212,168,83,'+al2+')';
+              gctx.fillText('GO!',GW/2,GH/2);
+            } else {
+              tutPhase=5;startTime=Date.now();runes=[];
+            }
           }
-          // Draw cursor even during countdown
+
+          // Always draw cursor during tutorial
           if(bmx>0){
             var cg=gctx.createRadialGradient(bmx,bmy,0,bmx,bmy,30);
             cg.addColorStop(0,'rgba(220,190,100,0.3)');cg.addColorStop(1,'rgba(220,190,100,0)');
             gctx.fillStyle=cg;gctx.fillRect(bmx-30,bmy-30,60,60);
+            gctx.beginPath();gctx.arc(bmx,bmy,3,0,Math.PI*2);
+            gctx.fillStyle='rgba(255,230,150,0.7)';gctx.fill();
           }
+
+          // Still draw runes & trail & explosions during tutorial
+          // (runes drawn above in main loop, trail below)
+          if(trail.length>=2){
+            var now2=Date.now();
+            for(var i=1;i<trail.length;i++){
+              var p0=trail[i-1],p1=trail[i];
+              var age2=(now2-p1.t)/200;
+              var alpha2=(1-age2)*0.7;
+              var width2=(1-age2)*6+2;
+              gctx.beginPath();gctx.moveTo(p0.x,p0.y);gctx.lineTo(p1.x,p1.y);
+              gctx.strokeStyle='rgba(255,220,120,'+alpha2+')';gctx.lineWidth=width2;gctx.lineCap='round';gctx.stroke();
+              gctx.strokeStyle='rgba(255,200,80,'+(alpha2*0.3)+')';gctx.lineWidth=width2*3;gctx.stroke();
+            }
+          }
+          for(var i=explosions.length-1;i>=0;i--){
+            var e=explosions[i];e.x+=e.vx;e.y+=e.vy;e.vx*=0.94;e.vy*=0.94;e.life-=0.025;
+            if(e.life<=0){explosions.splice(i,1);continue}
+            gctx.beginPath();gctx.arc(e.x,e.y,e.r,0,Math.PI*2);gctx.fillStyle=e.color+e.life+')';gctx.fill();
+          }
+
           if(shakeAmount>0) gctx.restore();
           requestAnimationFrame(gameLoop);
           return;
@@ -1025,14 +1137,20 @@ if(landingEl) initLanding(landingEl);
           gctx.fill();gctx.stroke();
 
           // Character
-          gctx.font='bold '+Math.floor(r.r*0.9)+'px serif';
+          gctx.font='bold '+Math.floor(r.r*0.85)+'px serif';
           gctx.textAlign='center';gctx.textBaseline='middle';
           if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.8)';
           else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.9)';
           else gctx.fillStyle='rgba(220,190,120,0.7)';
-          gctx.fillText(r.char,0,2);
+          gctx.fillText(r.char,0,-2);
+          // English below
+          gctx.font=Math.floor(r.r*0.3)+'px Inter,sans-serif';
+          if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.45)';
+          else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.5)';
+          else gctx.fillStyle='rgba(200,175,110,0.4)';
+          gctx.fillText(r.charEn||'',0,r.r*0.45);
 
-          // Bomb warning symbol
+          // Bomb warning
           if(r.type==='bomb'){
             gctx.font='10px sans-serif';
             gctx.fillStyle='rgba(220,60,80,0.5)';
