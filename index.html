@@ -859,7 +859,7 @@ if(landingEl) initLanding(landingEl);
           y:GH+30,
           vy:-(2.5+Math.random()*2.5),
           vx:(Math.random()-0.5)*1.5,
-          r:isBomb?28:(isGolden?26:20+Math.random()*6),
+          r:isBomb?34:(isGolden?32:24+Math.random()*8),
           type:isBomb?'bomb':(isGolden?'golden':'normal'),
           char:rd.ch,
           charEn:rd.en,
@@ -965,7 +965,7 @@ if(landingEl) initLanding(landingEl);
 
           // --- Helper: draw a single tutorial rune directly ---
           function drawTutRune(tx,ty,type){
-            var tr=type==='bomb'?28:(type==='golden'?26:22);
+            var tr=type==='bomb'?34:(type==='golden'?32:26);
             var rd2=runeData[Math.floor((gt*10)%runeData.length)];
             var rot=gt*0.5;
             gctx.save();
@@ -1175,7 +1175,7 @@ if(landingEl) initLanding(landingEl);
             else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.9)';
             else gctx.fillStyle='rgba(220,190,120,0.7)';
             gctx.fillText(r.char,0,-2);
-            gctx.font=Math.floor(r.r*0.3)+'px Inter,sans-serif';
+            gctx.font=Math.floor(r.r*0.45)+'px Inter,sans-serif';
             if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.45)';
             else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.5)';
             else gctx.fillStyle='rgba(200,175,110,0.4)';
@@ -1289,7 +1289,7 @@ if(landingEl) initLanding(landingEl);
           else gctx.fillStyle='rgba(220,190,120,0.7)';
           gctx.fillText(r.char,0,-2);
           // English below
-          gctx.font=Math.floor(r.r*0.3)+'px Inter,sans-serif';
+          gctx.font=Math.floor(r.r*0.45)+'px Inter,sans-serif';
           if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.45)';
           else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.5)';
           else gctx.fillStyle='rgba(200,175,110,0.4)';
