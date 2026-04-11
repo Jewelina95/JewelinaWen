@@ -751,10 +751,10 @@ if(landingEl) initLanding(landingEl);
       pov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .6s';
       var pcd=document.createElement('div');
       pcd.style.cssText='max-width:380px;width:88%;padding:32px 28px;background:rgba(12,10,6,.96);border:1px solid rgba(212,168,83,.3);border-radius:18px;text-align:center;transform:scale(.85);opacity:0;transition:all .7s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 20px 60px rgba(0,0,0,.5)';
-      pcd.innerHTML='<div style="font-size:2rem;margin-bottom:10px">⚡</div>'
+      pcd.innerHTML='<div style="font-size:2rem;margin-bottom:10px">⚔️</div>'
         +'<div style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:#d4a853;margin-bottom:8px;font-weight:500">Ready for Level 2?</div>'
-        +'<div style="font-size:.85rem;color:rgba(245,240,235,.6);line-height:1.6;margin-bottom:6px">追光者 · Light Chaser</div>'
-        +'<div style="font-size:.78rem;color:rgba(245,240,235,.4);line-height:1.6;margin-bottom:20px">20 seconds to catch golden orbs.<br>Build combos. Avoid the dark ones.<br>Discover your spiritual power level!</div>'
+        +'<div style="font-size:.85rem;color:rgba(245,240,235,.6);line-height:1.6;margin-bottom:6px">光刃 · Light Blade</div>'
+        +'<div style="font-size:.78rem;color:rgba(245,240,235,.4);line-height:1.7;margin-bottom:20px">Wield a blade of golden light!<br>Slash through dark runes rising from the void.<br>Chain slashes for combo multipliers.<br>⚠️ Don\'t hit the void bombs!<br>Discover your spiritual power level.</div>'
         +'<div style="display:flex;gap:12px;justify-content:center">'
         +'<button id="l2-yes" style="padding:10px 28px;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.5);border-radius:22px;color:#d4a853;font-family:Inter,sans-serif;font-size:.8rem;cursor:pointer;transition:all .3s;font-weight:600;letter-spacing:.05em">Let\'s Go!</button>'
         +'<button id="l2-no" style="padding:10px 28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:22px;color:rgba(245,240,235,.5);font-family:Inter,sans-serif;font-size:.8rem;cursor:pointer;transition:all .3s;letter-spacing:.05em">Skip</button>'
@@ -776,11 +776,11 @@ if(landingEl) initLanding(landingEl);
     }
 
     // ============================================
-    // LEVEL 2: LIGHT CHASER 追光者
+    // LEVEL 2: LIGHT BLADE 光刃
     // ============================================
     function startLightChaser(){
       var gameOverlay=document.createElement('div');
-      gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;';
+      gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;cursor:none';
       var gameCanvas=document.createElement('canvas');
       gameCanvas.style.cssText='width:100%;height:100%;display:block;';
       gameOverlay.appendChild(gameCanvas);
@@ -790,43 +790,54 @@ if(landingEl) initLanding(landingEl);
       var GW=gameCanvas.width=window.innerWidth;
       var GH=gameCanvas.height=window.innerHeight;
 
-      var gameTime=20; // seconds
+      var gameTime=25;
       var startTime=Date.now();
       var score=0;
       var combo=0;
-      var lastCatchTime=0;
       var maxCombo=0;
-      var orbs=[];
-      var explosions=[];
+      var slashCount=0;
+      var missed=0;
       var shakeAmount=0;
       var gameOver=false;
-      var catchCount=0;
 
-      // Countdown intro
+      // Countdown
       var countdownPhase=3;
       var countdownStart=Date.now();
 
-      // Energy readings based on score
+      // Mouse trail (light blade)
+      var trail=[];
+      var bladeActive=false;
+      var bmx=-1,bmy=-1;
+
+      // Runes rising from below
+      var runes=[];
+      var explosions=[];
+
+      // Rune symbols
+      var runeChars=['卦','道','气','元','灵','阴','阳','命','缘','禅','空','悟','明','心','法','玄'];
+
       var energyLevels=[
         {min:0,level:'初窥门径 · Novice Seeker',cn:'你的灵觉正在觉醒，光之旅才刚刚开始。保持好奇心，宇宙的奥秘将向你敞开。',en:'Your spiritual awareness is just awakening. Stay curious — the mysteries of the universe are opening to you.'},
-        {min:15,level:'光之学徒 · Light Apprentice',cn:'你已能感知微光的流动。直觉在增长，内在的指引正变得清晰。',en:'You can sense the flow of subtle light. Your intuition grows stronger — inner guidance becomes clearer.'},
-        {min:30,level:'灵能行者 · Energy Walker',cn:'你的能量场稳定而明亮。你有能力在混沌中找到秩序，在黑暗中看见光明。',en:'Your energy field is stable and bright. You can find order in chaos and light in darkness.'},
-        {min:50,level:'金光大师 · Golden Master',cn:'惊人的灵力！你与宇宙能量的共振已达到极高频率。你的直觉近乎超自然。',en:'Astonishing spiritual power! Your resonance with universal energy has reached extraordinary frequencies.'},
-        {min:75,level:'天人合一 · One with the Cosmos',cn:'传说级的存在！你已超越凡尘，达到天人合一的境界。光与影在你手中如臂使指。',en:'A legendary being! You have transcended the mundane, achieving unity with the cosmos. Light and shadow bend to your will.'}
+        {min:20,level:'光之学徒 · Light Apprentice',cn:'你已能感知微光的流动。直觉在增长，内在的指引正变得清晰。',en:'You can sense the flow of subtle light. Your intuition grows stronger — inner guidance becomes clearer.'},
+        {min:40,level:'灵能行者 · Energy Walker',cn:'你的能量场稳定而明亮。你有能力在混沌中找到秩序，在黑暗中看见光明。',en:'Your energy field is stable and bright. You can find order in chaos and light in darkness.'},
+        {min:70,level:'金光大师 · Golden Master',cn:'惊人的灵力！你与宇宙能量的共振已达到极高频率。你的直觉近乎超自然。',en:'Astonishing spiritual power! Your resonance with universal energy has reached extraordinary frequencies.'},
+        {min:100,level:'天人合一 · One with the Cosmos',cn:'传说级的存在！你已超越凡尘，达到天人合一的境界。光与影在你手中如臂使指。',en:'A legendary being! You have transcended the mundane. Light and shadow bend to your will.'}
       ];
 
-      function spawnOrb(){
-        var isSpecial=Math.random()>0.92;
-        var isDark=Math.random()>0.88;
-        orbs.push({
-          x:Math.random()*GW,
-          y:Math.random()*GH,
-          r:isDark?18:(isSpecial?22:12+Math.random()*8),
-          vx:(Math.random()-0.5)*2,
-          vy:(Math.random()-0.5)*2,
-          life:1,
-          decay:0.003+Math.random()*0.004,
-          type:isDark?'dark':(isSpecial?'special':'normal'),
+      function spawnRune(){
+        var isBomb=Math.random()>0.85;
+        var isGolden=!isBomb&&Math.random()>0.88;
+        runes.push({
+          x:60+Math.random()*(GW-120),
+          y:GH+30,
+          vy:-(2.5+Math.random()*2.5),
+          vx:(Math.random()-0.5)*1.5,
+          r:isBomb?28:(isGolden?26:20+Math.random()*6),
+          type:isBomb?'bomb':(isGolden?'golden':'normal'),
+          char:runeChars[Math.floor(Math.random()*runeChars.length)],
+          rotation:Math.random()*Math.PI*2,
+          rotSpeed:(Math.random()-0.5)*0.04,
+          slashed:false,
           phase:Math.random()*Math.PI*2
         });
       }
@@ -834,91 +845,112 @@ if(landingEl) initLanding(landingEl);
       function addExplosion(x,y,color,count){
         for(var i=0;i<count;i++){
           var angle=Math.random()*Math.PI*2;
-          var speed=2+Math.random()*4;
-          explosions.push({
-            x:x,y:y,
-            vx:Math.cos(angle)*speed,
-            vy:Math.sin(angle)*speed,
-            r:1+Math.random()*2,
-            life:1,
-            color:color
-          });
+          var speed=3+Math.random()*5;
+          explosions.push({x:x,y:y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:1+Math.random()*2.5,life:1,color:color});
         }
       }
 
-      // Click/tap handler
-      function handleClick(cx,cy){
-        if(gameOver||countdownPhase>0) return;
-        var hit=false;
-        for(var i=orbs.length-1;i>=0;i--){
-          var o=orbs[i];
-          var dx=cx-o.x,dy=cy-o.y;
+      // Check if blade trail intersects a rune
+      function checkSlash(){
+        if(trail.length<3) return;
+        var p1=trail[trail.length-1],p2=trail[trail.length-3];
+        var speed=Math.sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+        if(speed<8) return; // must be fast enough
+
+        for(var i=runes.length-1;i>=0;i--){
+          var r=runes[i];
+          if(r.slashed||r.y>GH) continue;
+          // Check distance from blade line to rune center
+          var dx=p1.x-r.x,dy=p1.y-r.y;
           var dist=Math.sqrt(dx*dx+dy*dy);
-          if(dist<o.r+15){
-            if(o.type==='dark'){
-              score=Math.max(0,score-5);
+          if(dist<r.r+20){
+            r.slashed=true;
+            if(r.type==='bomb'){
+              score=Math.max(0,score-8);
               combo=0;
-              addExplosion(o.x,o.y,'rgba(120,40,160,',8);
-              shakeAmount=8;
+              shakeAmount=12;
+              addExplosion(r.x,r.y,'rgba(140,30,30,',15);
+              // Flash red
+              gctx.fillStyle='rgba(180,30,30,0.15)';
+              gctx.fillRect(0,0,GW,GH);
             } else {
-              var now=Date.now();
-              if(now-lastCatchTime<600) combo++; else combo=1;
-              lastCatchTime=now;
+              combo++;
               if(combo>maxCombo) maxCombo=combo;
-              var points=o.type==='special'?5:1;
-              points*=Math.min(combo,5);
-              score+=points;
-              catchCount++;
-              addExplosion(o.x,o.y,o.type==='special'?'rgba(255,200,100,':'rgba(220,185,100,',o.type==='special'?20:12);
-              shakeAmount=combo>3?6:3;
+              var pts=r.type==='golden'?5:1;
+              pts*=Math.min(combo,8);
+              score+=pts;
+              slashCount++;
+              shakeAmount=Math.min(combo,5)*1.5;
+              addExplosion(r.x,r.y,r.type==='golden'?'rgba(255,210,80,':'rgba(220,185,100,',r.type==='golden'?25:15);
             }
-            orbs.splice(i,1);
-            hit=true;
-            break;
           }
         }
       }
 
-      gameOverlay.addEventListener('click',function(e){handleClick(e.clientX,e.clientY)});
-      gameOverlay.addEventListener('touchstart',function(e){
-        for(var i=0;i<e.touches.length;i++) handleClick(e.touches[i].clientX,e.touches[i].clientY);
-      },{passive:true});
+      // Mouse/touch handlers
+      function onMove(x,y){
+        bmx=x;bmy=y;
+        if(bladeActive&&!gameOver&&countdownPhase<=0){
+          trail.push({x:x,y:y,t:Date.now()});
+          if(trail.length>40) trail.shift();
+          checkSlash();
+        }
+      }
+      function onDown(x,y){bladeActive=true;trail=[];bmx=x;bmy=y}
+      function onUp(){bladeActive=false;combo=0}
+
+      gameOverlay.addEventListener('mousedown',function(e){onDown(e.clientX,e.clientY)});
+      gameOverlay.addEventListener('mousemove',function(e){onMove(e.clientX,e.clientY)});
+      gameOverlay.addEventListener('mouseup',onUp);
+      gameOverlay.addEventListener('touchstart',function(e){var t=e.touches[0];onDown(t.clientX,t.clientY)},{passive:true});
+      gameOverlay.addEventListener('touchmove',function(e){var t=e.touches[0];onMove(t.clientX,t.clientY)},{passive:true});
+      gameOverlay.addEventListener('touchend',onUp,{passive:true});
 
       var gt=0;
+      var spawnTimer=0;
       function gameLoop(){
         gt+=0.016;
         gctx.clearRect(0,0,GW,GH);
 
-        // Shake
         if(shakeAmount>0){
           gctx.save();
           gctx.translate((Math.random()-0.5)*shakeAmount,(Math.random()-0.5)*shakeAmount);
-          shakeAmount*=0.85;
-          if(shakeAmount<0.3) shakeAmount=0;
+          shakeAmount*=0.82;if(shakeAmount<0.3)shakeAmount=0;
         }
 
-        // Background
+        // BG
         gctx.fillStyle='#030508';
         gctx.fillRect(0,0,GW,GH);
+        // Subtle grid
+        gctx.strokeStyle='rgba(212,168,83,0.015)';
+        gctx.lineWidth=1;
+        for(var gx=0;gx<GW;gx+=60){gctx.beginPath();gctx.moveTo(gx,0);gctx.lineTo(gx,GH);gctx.stroke()}
+        for(var gy=0;gy<GH;gy+=60){gctx.beginPath();gctx.moveTo(0,gy);gctx.lineTo(GW,gy);gctx.stroke()}
 
         // === COUNTDOWN ===
         if(countdownPhase>0){
           var elapsed=(Date.now()-countdownStart)/1000;
           var num=Math.ceil(3-elapsed);
-          if(num<=0){ countdownPhase=0; startTime=Date.now(); }
+          if(num<=0){countdownPhase=0;startTime=Date.now()}
           else{
-            var scale=1+(elapsed%1)*0.3;
-            var alpha=1-(elapsed%1);
-            gctx.font='bold '+Math.floor(80*scale)+'px "Cormorant Garamond",serif';
+            var sc2=1+(elapsed%1)*0.3;
+            var al=1-(elapsed%1);
+            gctx.font='bold '+Math.floor(80*sc2)+'px "Cormorant Garamond",serif';
             gctx.textAlign='center';gctx.textBaseline='middle';
-            gctx.fillStyle='rgba(212,168,83,'+alpha+')';
-            gctx.fillText(num,GW/2,GH/2);
-            gctx.font='18px Inter,sans-serif';
+            gctx.fillStyle='rgba(212,168,83,'+al+')';
+            gctx.fillText(num,GW/2,GH/2-20);
+            gctx.font='20px Inter,sans-serif';
             gctx.fillStyle='rgba(212,168,83,0.5)';
-            gctx.fillText('追光者 Light Chaser',GW/2,GH/2+60);
+            gctx.fillText('光刃 Light Blade',GW/2,GH/2+50);
             gctx.font='13px Inter,sans-serif';
             gctx.fillStyle='rgba(200,185,140,0.3)';
-            gctx.fillText('Catch the golden orbs · Avoid the dark ones',GW/2,GH/2+85);
+            gctx.fillText('Hold & drag to slash · Slice the rising runes',GW/2,GH/2+78);
+          }
+          // Draw cursor even during countdown
+          if(bmx>0){
+            var cg=gctx.createRadialGradient(bmx,bmy,0,bmx,bmy,30);
+            cg.addColorStop(0,'rgba(220,190,100,0.3)');cg.addColorStop(1,'rgba(220,190,100,0)');
+            gctx.fillStyle=cg;gctx.fillRect(bmx-30,bmy-30,60,60);
           }
           if(shakeAmount>0) gctx.restore();
           requestAnimationFrame(gameLoop);
@@ -928,165 +960,200 @@ if(landingEl) initLanding(landingEl);
         // Timer
         var elapsed=(Date.now()-startTime)/1000;
         var remaining=Math.max(0,gameTime-elapsed);
-
         if(remaining<=0&&!gameOver){
           gameOver=true;
-          setTimeout(function(){ showGameResult(); },800);
+          setTimeout(showGameResult,1000);
         }
 
-        // Spawn orbs
-        if(!gameOver&&Math.random()>0.92) spawnOrb();
+        // Spawn runes — gets faster over time
+        spawnTimer+=0.016;
+        var spawnRate=0.6-elapsed*0.015; // faster spawn as time goes on
+        if(spawnTimer>Math.max(0.2,spawnRate)){
+          spawnRune();
+          spawnTimer=0;
+        }
 
-        // Draw & update orbs
-        for(var i=orbs.length-1;i>=0;i--){
-          var o=orbs[i];
-          o.x+=o.vx+Math.sin(gt*2+o.phase)*0.5;
-          o.y+=o.vy+Math.cos(gt*1.5+o.phase)*0.4;
-          o.life-=o.decay;
-          // Bounce off edges
-          if(o.x<0||o.x>GW) o.vx*=-1;
-          if(o.y<0||o.y>GH) o.vy*=-1;
-          if(o.life<=0){ orbs.splice(i,1); continue; }
+        // Update & draw runes
+        for(var i=runes.length-1;i>=0;i--){
+          var r=runes[i];
+          if(r.slashed){runes.splice(i,1);continue}
+          r.y+=r.vy;
+          r.x+=r.vx;
+          r.rotation+=r.rotSpeed;
+          // If rune goes off top = missed
+          if(r.y<-50){
+            if(r.type!=='bomb') missed++;
+            runes.splice(i,1);
+            continue;
+          }
 
-          var alpha=o.life*0.8;
+          // Draw rune
+          gctx.save();
+          gctx.translate(r.x,r.y);
+          gctx.rotate(r.rotation);
+
           // Glow
-          var glowR=o.r*3;
-          var glow=gctx.createRadialGradient(o.x,o.y,0,o.x,o.y,glowR);
-          if(o.type==='dark'){
-            glow.addColorStop(0,'rgba(100,30,140,'+(alpha*0.3)+')');
-            glow.addColorStop(1,'rgba(60,10,80,0)');
-          } else if(o.type==='special'){
-            glow.addColorStop(0,'rgba(255,220,120,'+(alpha*0.25)+')');
-            glow.addColorStop(1,'rgba(255,200,80,0)');
+          var glowR=r.r*2.5;
+          var glow=gctx.createRadialGradient(0,0,0,0,0,glowR);
+          if(r.type==='bomb'){
+            glow.addColorStop(0,'rgba(140,30,50,0.2)');
+            glow.addColorStop(1,'rgba(100,10,30,0)');
+          } else if(r.type==='golden'){
+            glow.addColorStop(0,'rgba(255,210,80,0.2)');
+            glow.addColorStop(1,'rgba(255,180,50,0)');
           } else {
-            glow.addColorStop(0,'rgba(220,185,100,'+(alpha*0.2)+')');
-            glow.addColorStop(1,'rgba(200,160,70,0)');
+            glow.addColorStop(0,'rgba(200,170,100,0.12)');
+            glow.addColorStop(1,'rgba(180,150,80,0)');
           }
           gctx.fillStyle=glow;
-          gctx.fillRect(o.x-glowR,o.y-glowR,glowR*2,glowR*2);
+          gctx.fillRect(-glowR,-glowR,glowR*2,glowR*2);
 
-          // Core
+          // Rune circle
           gctx.beginPath();
-          gctx.arc(o.x,o.y,o.r*(0.8+Math.sin(gt*4+o.phase)*0.2),0,Math.PI*2);
-          if(o.type==='dark'){
-            gctx.fillStyle='rgba(80,20,120,'+alpha+')';
-          } else if(o.type==='special'){
-            // Rainbow shimmer
-            var hue=(gt*100+o.phase*50)%360;
-            gctx.fillStyle='hsla('+hue+',70%,65%,'+alpha+')';
+          gctx.arc(0,0,r.r,0,Math.PI*2);
+          if(r.type==='bomb'){
+            gctx.fillStyle='rgba(100,15,30,0.6)';
+            gctx.strokeStyle='rgba(180,40,60,0.5)';
+          } else if(r.type==='golden'){
+            gctx.fillStyle='rgba(60,45,15,0.6)';
+            gctx.strokeStyle='rgba(255,210,80,0.6)';
           } else {
-            gctx.fillStyle='rgba(220,185,100,'+alpha+')';
+            gctx.fillStyle='rgba(30,25,15,0.5)';
+            gctx.strokeStyle='rgba(200,170,100,0.35)';
           }
-          gctx.fill();
+          gctx.lineWidth=2;
+          gctx.fill();gctx.stroke();
 
-          // Inner highlight
-          if(o.type!=='dark'){
+          // Character
+          gctx.font='bold '+Math.floor(r.r*0.9)+'px serif';
+          gctx.textAlign='center';gctx.textBaseline='middle';
+          if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.8)';
+          else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.9)';
+          else gctx.fillStyle='rgba(220,190,120,0.7)';
+          gctx.fillText(r.char,0,2);
+
+          // Bomb warning symbol
+          if(r.type==='bomb'){
+            gctx.font='10px sans-serif';
+            gctx.fillStyle='rgba(220,60,80,0.5)';
+            gctx.fillText('⚠',0,-r.r-8);
+          }
+
+          gctx.restore();
+        }
+
+        // === BLADE TRAIL ===
+        var now=Date.now();
+        // Remove old trail points
+        while(trail.length>0&&now-trail[0].t>200) trail.shift();
+
+        if(trail.length>=2){
+          for(var i=1;i<trail.length;i++){
+            var p0=trail[i-1],p1=trail[i];
+            var age=(now-p1.t)/200;
+            var alpha=(1-age)*0.7;
+            var width=(1-age)*6+2;
             gctx.beginPath();
-            gctx.arc(o.x-o.r*0.2,o.y-o.r*0.2,o.r*0.35,0,Math.PI*2);
-            gctx.fillStyle='rgba(255,250,230,'+(alpha*0.4)+')';
-            gctx.fill();
+            gctx.moveTo(p0.x,p0.y);
+            gctx.lineTo(p1.x,p1.y);
+            gctx.strokeStyle='rgba(255,220,120,'+alpha+')';
+            gctx.lineWidth=width;
+            gctx.lineCap='round';
+            gctx.stroke();
+            // Glow layer
+            gctx.strokeStyle='rgba(255,200,80,'+(alpha*0.3)+')';
+            gctx.lineWidth=width*3;
+            gctx.stroke();
           }
         }
 
         // Explosions
         for(var i=explosions.length-1;i>=0;i--){
           var e=explosions[i];
-          e.x+=e.vx; e.y+=e.vy;
-          e.vx*=0.95; e.vy*=0.95;
-          e.life-=0.03;
-          if(e.life<=0){ explosions.splice(i,1); continue; }
-          gctx.beginPath();
-          gctx.arc(e.x,e.y,e.r,0,Math.PI*2);
-          gctx.fillStyle=e.color+e.life+')';
+          e.x+=e.vx;e.y+=e.vy;e.vx*=0.94;e.vy*=0.94;e.life-=0.025;
+          if(e.life<=0){explosions.splice(i,1);continue}
+          gctx.beginPath();gctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+          gctx.fillStyle=e.color+e.life+')';gctx.fill();
+        }
+
+        // === CURSOR (golden light dot) ===
+        if(bmx>0){
+          var curGlow=gctx.createRadialGradient(bmx,bmy,0,bmx,bmy,bladeActive?50:25);
+          curGlow.addColorStop(0,'rgba(220,190,100,'+(bladeActive?0.35:0.15)+')');
+          curGlow.addColorStop(0.5,'rgba(200,170,80,'+(bladeActive?0.1:0.05)+')');
+          curGlow.addColorStop(1,'rgba(180,150,60,0)');
+          gctx.fillStyle=curGlow;
+          gctx.fillRect(bmx-50,bmy-50,100,100);
+          // Center dot
+          gctx.beginPath();gctx.arc(bmx,bmy,3,0,Math.PI*2);
+          gctx.fillStyle='rgba(255,230,150,'+(bladeActive?0.9:0.5)+')';
           gctx.fill();
         }
 
         // === HUD ===
-        // Timer bar
-        var barW=200,barH=4;
-        var barX=(GW-barW)/2,barY=30;
-        gctx.fillStyle='rgba(255,255,255,0.08)';
+        var barW=200,barH=4,barX=(GW-barW)/2,barY=28;
+        gctx.fillStyle='rgba(255,255,255,0.06)';
         gctx.fillRect(barX,barY,barW,barH);
         var pct=remaining/gameTime;
-        var barColor=pct>0.3?'rgba(212,168,83,0.7)':'rgba(220,80,80,0.7)';
-        gctx.fillStyle=barColor;
+        gctx.fillStyle=pct>0.25?'rgba(212,168,83,0.65)':'rgba(220,80,80,0.7)';
         gctx.fillRect(barX,barY,barW*pct,barH);
-
-        // Time text
-        gctx.font='600 14px "Space Grotesk",monospace';
+        gctx.font='600 13px "Space Grotesk",monospace';
         gctx.textAlign='center';
-        gctx.fillStyle=pct>0.3?'rgba(212,168,83,0.6)':'rgba(220,100,100,0.8)';
-        gctx.fillText(remaining.toFixed(1)+'s',GW/2,50);
+        gctx.fillStyle=pct>0.25?'rgba(212,168,83,0.5)':'rgba(220,100,100,0.7)';
+        gctx.fillText(remaining.toFixed(1)+'s',GW/2,48);
 
         // Score
-        gctx.font='600 28px "Cormorant Garamond",serif';
+        gctx.font='600 30px "Cormorant Garamond",serif';
         gctx.textAlign='left';
         gctx.fillStyle='rgba(220,190,120,0.8)';
-        gctx.fillText(score,30,45);
-        gctx.font='11px Inter,sans-serif';
-        gctx.fillStyle='rgba(200,180,130,0.4)';
-        gctx.fillText('SCORE',30,60);
+        gctx.fillText(score,28,48);
+        gctx.font='10px Inter,sans-serif';
+        gctx.fillStyle='rgba(200,180,130,0.35)';
+        gctx.fillText('SCORE',28,62);
 
         // Combo
         if(combo>1){
-          var comboAlpha=Math.min(1,0.5+combo*0.1);
-          var comboScale=1+combo*0.05;
-          gctx.font='bold '+Math.floor(20*comboScale)+'px Inter,sans-serif';
+          var ca=Math.min(1,0.4+combo*0.08);
+          gctx.font='bold '+Math.floor(18+combo*2)+'px Inter,sans-serif';
           gctx.textAlign='right';
-          gctx.fillStyle='rgba(255,200,80,'+comboAlpha+')';
-          gctx.fillText('x'+combo+' COMBO',GW-30,45);
+          gctx.fillStyle='rgba(255,200,80,'+ca+')';
+          gctx.fillText('x'+combo,GW-28,46);
+          gctx.font='10px Inter,sans-serif';
+          gctx.fillStyle='rgba(255,200,80,0.35)';
+          gctx.fillText('COMBO',GW-28,60);
         }
 
         if(shakeAmount>0) gctx.restore();
-
         if(!gameOver) requestAnimationFrame(gameLoop);
       }
 
       function showGameResult(){
-        // Determine level
         var level=energyLevels[0];
-        for(var i=energyLevels.length-1;i>=0;i--){
-          if(score>=energyLevels[i].min){ level=energyLevels[i]; break; }
-        }
-
-        // Fade to result
+        for(var i=energyLevels.length-1;i>=0;i--){if(score>=energyLevels[i].min){level=energyLevels[i];break}}
         gameOverlay.style.transition='opacity 0.8s';
         gameOverlay.style.opacity='0';
         setTimeout(function(){
           gameOverlay.remove();
-          // Show result popup
           var ov=document.createElement('div');
           ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .6s;overflow-y:auto;padding:20px';
           var cd=document.createElement('div');
           cd.style.cssText='max-width:440px;width:92%;padding:36px 28px;background:rgba(12,10,6,.96);border:1px solid rgba(212,168,83,.3);border-radius:20px;text-align:center;transform:scale(.85);opacity:0;transition:all .7s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.6)';
-
-          cd.innerHTML='<div style="font-size:2.2rem;margin-bottom:8px">⚡</div>'
-            +'<div style="font-size:.62rem;color:rgba(212,168,83,.4);letter-spacing:.2em;margin-bottom:12px">LIGHT CHASER · 追光者</div>'
+          cd.innerHTML='<div style="font-size:2.2rem;margin-bottom:8px">⚔️</div>'
+            +'<div style="font-size:.62rem;color:rgba(212,168,83,.4);letter-spacing:.2em;margin-bottom:12px">LIGHT BLADE · 光刃</div>'
             +'<div style="font-size:2.5rem;color:#d4a853;font-family:Cormorant Garamond,serif;font-weight:600;margin-bottom:4px">'+score+'</div>'
-            +'<div style="font-size:.7rem;color:rgba(245,240,235,.4);margin-bottom:16px">Orbs caught: '+catchCount+' · Max combo: x'+maxCombo+'</div>'
+            +'<div style="font-size:.7rem;color:rgba(245,240,235,.4);margin-bottom:16px">Runes slashed: '+slashCount+' · Max combo: x'+maxCombo+' · Missed: '+missed+'</div>'
             +'<div style="width:60px;height:1px;background:rgba(212,168,83,.2);margin:0 auto 14px"></div>'
             +'<div style="font-size:1.2rem;color:#d4a853;font-family:Cormorant Garamond,serif;font-weight:500;margin-bottom:10px">'+level.level+'</div>'
             +'<div style="font-size:.88rem;line-height:1.8;color:rgba(245,240,235,.8);margin-bottom:8px">'+level.cn+'</div>'
             +'<div style="font-size:.78rem;line-height:1.6;color:rgba(245,240,235,.4);font-style:italic;margin-bottom:20px">'+level.en+'</div>'
             +'<button id="game-close" style="padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
-
-          ov.appendChild(cd);
-          document.body.appendChild(ov);
-          setTimeout(function(){
-            ov.style.background='rgba(0,0,0,.65)';
-            cd.style.transform='scale(1)';cd.style.opacity='1';
-          },50);
-          document.getElementById('game-close').onclick=function(){
-            cd.style.transform='scale(.9)';cd.style.opacity='0';
-            ov.style.background='rgba(0,0,0,0)';
-            setTimeout(function(){ov.remove()},500);
-          };
+          ov.appendChild(cd);document.body.appendChild(ov);
+          setTimeout(function(){ov.style.background='rgba(0,0,0,.65)';cd.style.transform='scale(1)';cd.style.opacity='1'},50);
+          document.getElementById('game-close').onclick=function(){cd.style.transform='scale(.9)';cd.style.opacity='0';ov.style.background='rgba(0,0,0,0)';setTimeout(function(){ov.remove()},500)};
           ov.addEventListener('click',function(e){if(e.target===ov)document.getElementById('game-close').click()});
         },800);
       }
 
-      // Pre-spawn some orbs
-      for(var i=0;i<8;i++) spawnOrb();
       gameLoop();
     }
 
