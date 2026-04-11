@@ -700,7 +700,10 @@ if(landingEl) initLanding(landingEl);
         +'<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+((parseInt(d.fortune.level)*15+55)||78)+'%;background:linear-gradient(90deg,#a07c30,#d4a853,#f0d68a);border-radius:2px;animation:pulse-bar 2s ease-in-out infinite"></div></div>'
         +'</div>'
         // Button
-        +'<button id="fortune-close" style="margin-top:16px;padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
+        +'<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">'
+        +'<button id="fortune-level2" style="padding:10px 28px;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.5);border-radius:24px;color:#d4a853;font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase;font-weight:600">⚡ Level 2: Light Chaser</button>'
+        +'<button id="fortune-close" style="padding:10px 28px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:24px;color:rgba(245,240,235,.6);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter World →</button>'
+        +'</div>';
 
       card.innerHTML=h;
       overlay.appendChild(card);
@@ -719,14 +722,340 @@ if(landingEl) initLanding(landingEl);
       },50);
 
       var closeBtn=document.getElementById('fortune-close');
-      closeBtn.onmouseover=function(){this.style.borderColor='rgba(212,168,83,0.7)';this.style.color='#d4a853';};
-      closeBtn.onmouseout=function(){this.style.borderColor='rgba(212,168,83,0.35)';this.style.color='rgba(245,240,235,0.75)';};
+      closeBtn.onmouseover=function(){this.style.borderColor='rgba(255,255,255,.3)';this.style.color='rgba(245,240,235,.85)';};
+      closeBtn.onmouseout=function(){this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(245,240,235,.6)';};
       closeBtn.onclick=function(){
         card.style.transform='scale(0.9) translateY(10px)';card.style.opacity='0';
         overlay.style.background='rgba(0,0,0,0)';
         setTimeout(function(){ overlay.remove(); },600);
       };
+      // Level 2 button
+      var l2Btn=document.getElementById('fortune-level2');
+      if(l2Btn){
+        l2Btn.onmouseover=function(){this.style.background='rgba(212,168,83,.35)';};
+        l2Btn.onmouseout=function(){this.style.background='rgba(212,168,83,.2)';};
+        l2Btn.onclick=function(){
+          card.style.transform='scale(0.9)';card.style.opacity='0';
+          overlay.style.background='rgba(0,0,0,0)';
+          setTimeout(function(){ overlay.remove(); startLightChaser(); },500);
+        };
+      }
       overlay.addEventListener('click',function(e){ if(e.target===overlay) closeBtn.click(); });
+    }
+
+    // ============================================
+    // LEVEL 2: LIGHT CHASER 追光者
+    // ============================================
+    function startLightChaser(){
+      var gameOverlay=document.createElement('div');
+      gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;';
+      var gameCanvas=document.createElement('canvas');
+      gameCanvas.style.cssText='width:100%;height:100%;display:block;';
+      gameOverlay.appendChild(gameCanvas);
+      document.body.appendChild(gameOverlay);
+
+      var gctx=gameCanvas.getContext('2d');
+      var GW=gameCanvas.width=window.innerWidth;
+      var GH=gameCanvas.height=window.innerHeight;
+
+      var gameTime=20; // seconds
+      var startTime=Date.now();
+      var score=0;
+      var combo=0;
+      var lastCatchTime=0;
+      var maxCombo=0;
+      var orbs=[];
+      var explosions=[];
+      var shakeAmount=0;
+      var gameOver=false;
+      var catchCount=0;
+
+      // Countdown intro
+      var countdownPhase=3;
+      var countdownStart=Date.now();
+
+      // Energy readings based on score
+      var energyLevels=[
+        {min:0,level:'初窥门径 · Novice Seeker',cn:'你的灵觉正在觉醒，光之旅才刚刚开始。保持好奇心，宇宙的奥秘将向你敞开。',en:'Your spiritual awareness is just awakening. Stay curious — the mysteries of the universe are opening to you.'},
+        {min:15,level:'光之学徒 · Light Apprentice',cn:'你已能感知微光的流动。直觉在增长，内在的指引正变得清晰。',en:'You can sense the flow of subtle light. Your intuition grows stronger — inner guidance becomes clearer.'},
+        {min:30,level:'灵能行者 · Energy Walker',cn:'你的能量场稳定而明亮。你有能力在混沌中找到秩序，在黑暗中看见光明。',en:'Your energy field is stable and bright. You can find order in chaos and light in darkness.'},
+        {min:50,level:'金光大师 · Golden Master',cn:'惊人的灵力！你与宇宙能量的共振已达到极高频率。你的直觉近乎超自然。',en:'Astonishing spiritual power! Your resonance with universal energy has reached extraordinary frequencies.'},
+        {min:75,level:'天人合一 · One with the Cosmos',cn:'传说级的存在！你已超越凡尘，达到天人合一的境界。光与影在你手中如臂使指。',en:'A legendary being! You have transcended the mundane, achieving unity with the cosmos. Light and shadow bend to your will.'}
+      ];
+
+      function spawnOrb(){
+        var isSpecial=Math.random()>0.92;
+        var isDark=Math.random()>0.88;
+        orbs.push({
+          x:Math.random()*GW,
+          y:Math.random()*GH,
+          r:isDark?18:(isSpecial?22:12+Math.random()*8),
+          vx:(Math.random()-0.5)*2,
+          vy:(Math.random()-0.5)*2,
+          life:1,
+          decay:0.003+Math.random()*0.004,
+          type:isDark?'dark':(isSpecial?'special':'normal'),
+          phase:Math.random()*Math.PI*2
+        });
+      }
+
+      function addExplosion(x,y,color,count){
+        for(var i=0;i<count;i++){
+          var angle=Math.random()*Math.PI*2;
+          var speed=2+Math.random()*4;
+          explosions.push({
+            x:x,y:y,
+            vx:Math.cos(angle)*speed,
+            vy:Math.sin(angle)*speed,
+            r:1+Math.random()*2,
+            life:1,
+            color:color
+          });
+        }
+      }
+
+      // Click/tap handler
+      function handleClick(cx,cy){
+        if(gameOver||countdownPhase>0) return;
+        var hit=false;
+        for(var i=orbs.length-1;i>=0;i--){
+          var o=orbs[i];
+          var dx=cx-o.x,dy=cy-o.y;
+          var dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<o.r+15){
+            if(o.type==='dark'){
+              score=Math.max(0,score-5);
+              combo=0;
+              addExplosion(o.x,o.y,'rgba(120,40,160,',8);
+              shakeAmount=8;
+            } else {
+              var now=Date.now();
+              if(now-lastCatchTime<600) combo++; else combo=1;
+              lastCatchTime=now;
+              if(combo>maxCombo) maxCombo=combo;
+              var points=o.type==='special'?5:1;
+              points*=Math.min(combo,5);
+              score+=points;
+              catchCount++;
+              addExplosion(o.x,o.y,o.type==='special'?'rgba(255,200,100,':'rgba(220,185,100,',o.type==='special'?20:12);
+              shakeAmount=combo>3?6:3;
+            }
+            orbs.splice(i,1);
+            hit=true;
+            break;
+          }
+        }
+      }
+
+      gameOverlay.addEventListener('click',function(e){handleClick(e.clientX,e.clientY)});
+      gameOverlay.addEventListener('touchstart',function(e){
+        for(var i=0;i<e.touches.length;i++) handleClick(e.touches[i].clientX,e.touches[i].clientY);
+      },{passive:true});
+
+      var gt=0;
+      function gameLoop(){
+        gt+=0.016;
+        gctx.clearRect(0,0,GW,GH);
+
+        // Shake
+        if(shakeAmount>0){
+          gctx.save();
+          gctx.translate((Math.random()-0.5)*shakeAmount,(Math.random()-0.5)*shakeAmount);
+          shakeAmount*=0.85;
+          if(shakeAmount<0.3) shakeAmount=0;
+        }
+
+        // Background
+        gctx.fillStyle='#030508';
+        gctx.fillRect(0,0,GW,GH);
+
+        // === COUNTDOWN ===
+        if(countdownPhase>0){
+          var elapsed=(Date.now()-countdownStart)/1000;
+          var num=Math.ceil(3-elapsed);
+          if(num<=0){ countdownPhase=0; startTime=Date.now(); }
+          else{
+            var scale=1+(elapsed%1)*0.3;
+            var alpha=1-(elapsed%1);
+            gctx.font='bold '+Math.floor(80*scale)+'px "Cormorant Garamond",serif';
+            gctx.textAlign='center';gctx.textBaseline='middle';
+            gctx.fillStyle='rgba(212,168,83,'+alpha+')';
+            gctx.fillText(num,GW/2,GH/2);
+            gctx.font='18px Inter,sans-serif';
+            gctx.fillStyle='rgba(212,168,83,0.5)';
+            gctx.fillText('追光者 Light Chaser',GW/2,GH/2+60);
+            gctx.font='13px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,0.3)';
+            gctx.fillText('Catch the golden orbs · Avoid the dark ones',GW/2,GH/2+85);
+          }
+          if(shakeAmount>0) gctx.restore();
+          requestAnimationFrame(gameLoop);
+          return;
+        }
+
+        // Timer
+        var elapsed=(Date.now()-startTime)/1000;
+        var remaining=Math.max(0,gameTime-elapsed);
+
+        if(remaining<=0&&!gameOver){
+          gameOver=true;
+          setTimeout(function(){ showGameResult(); },800);
+        }
+
+        // Spawn orbs
+        if(!gameOver&&Math.random()>0.92) spawnOrb();
+
+        // Draw & update orbs
+        for(var i=orbs.length-1;i>=0;i--){
+          var o=orbs[i];
+          o.x+=o.vx+Math.sin(gt*2+o.phase)*0.5;
+          o.y+=o.vy+Math.cos(gt*1.5+o.phase)*0.4;
+          o.life-=o.decay;
+          // Bounce off edges
+          if(o.x<0||o.x>GW) o.vx*=-1;
+          if(o.y<0||o.y>GH) o.vy*=-1;
+          if(o.life<=0){ orbs.splice(i,1); continue; }
+
+          var alpha=o.life*0.8;
+          // Glow
+          var glowR=o.r*3;
+          var glow=gctx.createRadialGradient(o.x,o.y,0,o.x,o.y,glowR);
+          if(o.type==='dark'){
+            glow.addColorStop(0,'rgba(100,30,140,'+(alpha*0.3)+')');
+            glow.addColorStop(1,'rgba(60,10,80,0)');
+          } else if(o.type==='special'){
+            glow.addColorStop(0,'rgba(255,220,120,'+(alpha*0.25)+')');
+            glow.addColorStop(1,'rgba(255,200,80,0)');
+          } else {
+            glow.addColorStop(0,'rgba(220,185,100,'+(alpha*0.2)+')');
+            glow.addColorStop(1,'rgba(200,160,70,0)');
+          }
+          gctx.fillStyle=glow;
+          gctx.fillRect(o.x-glowR,o.y-glowR,glowR*2,glowR*2);
+
+          // Core
+          gctx.beginPath();
+          gctx.arc(o.x,o.y,o.r*(0.8+Math.sin(gt*4+o.phase)*0.2),0,Math.PI*2);
+          if(o.type==='dark'){
+            gctx.fillStyle='rgba(80,20,120,'+alpha+')';
+          } else if(o.type==='special'){
+            // Rainbow shimmer
+            var hue=(gt*100+o.phase*50)%360;
+            gctx.fillStyle='hsla('+hue+',70%,65%,'+alpha+')';
+          } else {
+            gctx.fillStyle='rgba(220,185,100,'+alpha+')';
+          }
+          gctx.fill();
+
+          // Inner highlight
+          if(o.type!=='dark'){
+            gctx.beginPath();
+            gctx.arc(o.x-o.r*0.2,o.y-o.r*0.2,o.r*0.35,0,Math.PI*2);
+            gctx.fillStyle='rgba(255,250,230,'+(alpha*0.4)+')';
+            gctx.fill();
+          }
+        }
+
+        // Explosions
+        for(var i=explosions.length-1;i>=0;i--){
+          var e=explosions[i];
+          e.x+=e.vx; e.y+=e.vy;
+          e.vx*=0.95; e.vy*=0.95;
+          e.life-=0.03;
+          if(e.life<=0){ explosions.splice(i,1); continue; }
+          gctx.beginPath();
+          gctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+          gctx.fillStyle=e.color+e.life+')';
+          gctx.fill();
+        }
+
+        // === HUD ===
+        // Timer bar
+        var barW=200,barH=4;
+        var barX=(GW-barW)/2,barY=30;
+        gctx.fillStyle='rgba(255,255,255,0.08)';
+        gctx.fillRect(barX,barY,barW,barH);
+        var pct=remaining/gameTime;
+        var barColor=pct>0.3?'rgba(212,168,83,0.7)':'rgba(220,80,80,0.7)';
+        gctx.fillStyle=barColor;
+        gctx.fillRect(barX,barY,barW*pct,barH);
+
+        // Time text
+        gctx.font='600 14px "Space Grotesk",monospace';
+        gctx.textAlign='center';
+        gctx.fillStyle=pct>0.3?'rgba(212,168,83,0.6)':'rgba(220,100,100,0.8)';
+        gctx.fillText(remaining.toFixed(1)+'s',GW/2,50);
+
+        // Score
+        gctx.font='600 28px "Cormorant Garamond",serif';
+        gctx.textAlign='left';
+        gctx.fillStyle='rgba(220,190,120,0.8)';
+        gctx.fillText(score,30,45);
+        gctx.font='11px Inter,sans-serif';
+        gctx.fillStyle='rgba(200,180,130,0.4)';
+        gctx.fillText('SCORE',30,60);
+
+        // Combo
+        if(combo>1){
+          var comboAlpha=Math.min(1,0.5+combo*0.1);
+          var comboScale=1+combo*0.05;
+          gctx.font='bold '+Math.floor(20*comboScale)+'px Inter,sans-serif';
+          gctx.textAlign='right';
+          gctx.fillStyle='rgba(255,200,80,'+comboAlpha+')';
+          gctx.fillText('x'+combo+' COMBO',GW-30,45);
+        }
+
+        if(shakeAmount>0) gctx.restore();
+
+        if(!gameOver) requestAnimationFrame(gameLoop);
+      }
+
+      function showGameResult(){
+        // Determine level
+        var level=energyLevels[0];
+        for(var i=energyLevels.length-1;i>=0;i--){
+          if(score>=energyLevels[i].min){ level=energyLevels[i]; break; }
+        }
+
+        // Fade to result
+        gameOverlay.style.transition='opacity 0.8s';
+        gameOverlay.style.opacity='0';
+        setTimeout(function(){
+          gameOverlay.remove();
+          // Show result popup
+          var ov=document.createElement('div');
+          ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .6s;overflow-y:auto;padding:20px';
+          var cd=document.createElement('div');
+          cd.style.cssText='max-width:440px;width:92%;padding:36px 28px;background:rgba(12,10,6,.96);border:1px solid rgba(212,168,83,.3);border-radius:20px;text-align:center;transform:scale(.85);opacity:0;transition:all .7s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.6)';
+
+          cd.innerHTML='<div style="font-size:2.2rem;margin-bottom:8px">⚡</div>'
+            +'<div style="font-size:.62rem;color:rgba(212,168,83,.4);letter-spacing:.2em;margin-bottom:12px">LIGHT CHASER · 追光者</div>'
+            +'<div style="font-size:2.5rem;color:#d4a853;font-family:Cormorant Garamond,serif;font-weight:600;margin-bottom:4px">'+score+'</div>'
+            +'<div style="font-size:.7rem;color:rgba(245,240,235,.4);margin-bottom:16px">Orbs caught: '+catchCount+' · Max combo: x'+maxCombo+'</div>'
+            +'<div style="width:60px;height:1px;background:rgba(212,168,83,.2);margin:0 auto 14px"></div>'
+            +'<div style="font-size:1.2rem;color:#d4a853;font-family:Cormorant Garamond,serif;font-weight:500;margin-bottom:10px">'+level.level+'</div>'
+            +'<div style="font-size:.88rem;line-height:1.8;color:rgba(245,240,235,.8);margin-bottom:8px">'+level.cn+'</div>'
+            +'<div style="font-size:.78rem;line-height:1.6;color:rgba(245,240,235,.4);font-style:italic;margin-bottom:20px">'+level.en+'</div>'
+            +'<button id="game-close" style="padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
+
+          ov.appendChild(cd);
+          document.body.appendChild(ov);
+          setTimeout(function(){
+            ov.style.background='rgba(0,0,0,.65)';
+            cd.style.transform='scale(1)';cd.style.opacity='1';
+          },50);
+          document.getElementById('game-close').onclick=function(){
+            cd.style.transform='scale(.9)';cd.style.opacity='0';
+            ov.style.background='rgba(0,0,0,0)';
+            setTimeout(function(){ov.remove()},500);
+          };
+          ov.addEventListener('click',function(e){if(e.target===ov)document.getElementById('game-close').click()});
+        },800);
+      }
+
+      // Pre-spawn some orbs
+      for(var i=0;i<8;i++) spawnOrb();
+      gameLoop();
     }
 
     function initNodes(){
