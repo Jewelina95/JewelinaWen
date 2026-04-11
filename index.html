@@ -811,12 +811,13 @@ if(landingEl) initLanding(landingEl);
       var shakeAmount=0;
       var gameOver=false;
 
-      // Tutorial phases: 0=title, 1=slash normal, 2=golden, 3=bomb, 4=go!
+      // Tutorial: 0=title, 1=single slash, 2=combo(2 runes), 3=bomb warning, 4=bomb slash, 5=start btn, 6=countdown, 7=playing
       var tutPhase=0;
       var tutStart=Date.now();
-      var tutMoved=false;
-      var tutSlashed=false;
-      var tutRune=null; // tutorial rune to practice on
+      var tutSlashCount=0;
+      var tutComboCount=0;
+      var tutBombHit=false;
+      var tutScore=0;
 
       // Mouse trail (light blade)
       var trail=[];
@@ -912,7 +913,7 @@ if(landingEl) initLanding(landingEl);
       // Mouse/touch handlers
       function onMove(x,y){
         bmx=x;bmy=y;
-        if(bladeActive&&!gameOver){
+        if(bladeActive&&!gameOver&&tutPhase>=7){
           trail.push({x:x,y:y,t:Date.now()});
           if(trail.length>40) trail.shift();
           checkSlash();
@@ -950,120 +951,188 @@ if(landingEl) initLanding(landingEl);
         for(var gy=0;gy<GH;gy+=60){gctx.beginPath();gctx.moveTo(0,gy);gctx.lineTo(GW,gy);gctx.stroke()}
 
         // === INTERACTIVE TUTORIAL ===
-        if(tutPhase<5){
+        if(tutPhase<7){
           gctx.textAlign='center';gctx.textBaseline='middle';
           var pulse=0.6+Math.sin(gt*3)*0.2;
 
+          // Keep tutorial runes frozen in place
+          for(var ri=0;ri<runes.length;ri++){
+            if(tutPhase<6){runes[ri].vy=0;runes[ri].vx=0;runes[ri].decay=0;}
+          }
+
+          // --- Phase 0: Title ---
           if(tutPhase===0){
-            // Title screen
-            gctx.font='bold 36px "Cormorant Garamond",serif';
-            gctx.fillStyle='rgba(212,168,83,0.8)';
-            gctx.fillText('光刃 Light Blade',GW/2,GH/2-30);
+            gctx.font='bold 38px "Cormorant Garamond",serif';
+            gctx.fillStyle='rgba(212,168,83,0.85)';
+            gctx.fillText('光刃 Light Blade',GW/2,GH/2-40);
+            gctx.font='15px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,0.5)';
+            gctx.fillText('Tutorial',GW/2,GH/2+5);
+            gctx.font='13px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
+            gctx.fillText('Move your cursor to begin',GW/2,GH/2+35);
+            if(bmx>0&&Date.now()-tutStart>500){
+              tutPhase=1;tutStart=Date.now();runes=[];
+              spawnRune('normal',GW/2);runes[runes.length-1].y=GH/2;
+            }
+          }
+          // --- Phase 1: Slash one normal rune ---
+          else if(tutPhase===1){
+            gctx.font='600 20px Inter,sans-serif';
+            gctx.fillStyle='rgba(220,190,120,0.8)';
+            gctx.fillText('Step 1: Slash the rune',GW/2,GH*0.18);
             gctx.font='14px Inter,sans-serif';
             gctx.fillStyle='rgba(200,185,140,'+pulse+')';
-            gctx.fillText('Move your mouse or touch to continue',GW/2,GH/2+20);
-            if(bmx>0&&!tutMoved){tutMoved=true}
-            if(tutMoved&&Date.now()-tutStart>800){tutPhase=1;tutStart=Date.now();tutMoved=false;tutSlashed=false;
-              spawnRune('normal',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
-            }
-          } else if(tutPhase===1){
-            // Teach: normal rune
-            gctx.font='600 16px Inter,sans-serif';
-            gctx.fillStyle='rgba(220,190,120,0.7)';
-            gctx.fillText('Golden Rune = +1 point',GW/2,GH*0.2);
-            gctx.font='13px Inter,sans-serif';
-            gctx.fillStyle='rgba(200,185,140,'+pulse+')';
-            gctx.fillText('Hold & drag across it to slash!',GW/2,GH*0.2+28);
-            // Draw the tutorial rune
-            if(tutRune&&!tutRune.slashed){
-              tutRune.y=GH/2;tutRune.decay=0;
-            } else if(tutRune&&tutRune.slashed){
-              // Slashed! Move to next
-              if(!tutSlashed){tutSlashed=true;tutStart=Date.now()}
-              gctx.font='600 18px Inter,sans-serif';
-              gctx.fillStyle='rgba(120,220,150,0.8)';
-              gctx.fillText('Great!',GW/2,GH/2);
-              if(Date.now()-tutStart>1000){tutPhase=2;tutStart=Date.now();tutSlashed=false;
-                spawnRune('golden',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
+            gctx.fillText('Hold & drag your cursor across it',GW/2,GH*0.18+30);
+            // Check if slashed
+            if(runes.length===0||runes[0].slashed){
+              if(!tutSlashCount){tutSlashCount=1;tutStart=Date.now();tutScore+=1}
+              gctx.font='bold 26px "Cormorant Garamond",serif';
+              gctx.fillStyle='rgba(120,220,150,0.9)';
+              gctx.fillText('+1 point!',GW/2,GH/2);
+              gctx.font='13px Inter,sans-serif';
+              gctx.fillStyle='rgba(200,185,140,0.5)';
+              gctx.fillText('Score: '+tutScore,GW/2,GH/2+30);
+              if(Date.now()-tutStart>1500){
+                tutPhase=2;tutStart=Date.now();runes=[];
+                // Spawn 2 runes side by side for combo
+                spawnRune('normal',GW*0.35);runes[runes.length-1].y=GH/2;
+                spawnRune('normal',GW*0.65);runes[runes.length-1].y=GH/2;
+                tutComboCount=0;
               }
             }
-          } else if(tutPhase===2){
-            // Teach: golden rune
-            gctx.font='600 16px Inter,sans-serif';
+          }
+          // --- Phase 2: Combo - slash 2 quickly ---
+          else if(tutPhase===2){
+            gctx.font='600 20px Inter,sans-serif';
             gctx.fillStyle='rgba(255,210,80,0.8)';
-            gctx.fillText('✦ Golden Rune = 5x points!',GW/2,GH*0.2);
-            gctx.font='13px Inter,sans-serif';
+            gctx.fillText('Step 2: Combo!',GW/2,GH*0.18);
+            gctx.font='14px Inter,sans-serif';
             gctx.fillStyle='rgba(200,185,140,'+pulse+')';
-            gctx.fillText('Slash it for bonus points!',GW/2,GH*0.2+28);
-            if(tutRune&&!tutRune.slashed){tutRune.y=GH/2;tutRune.decay=0}
-            else if(tutRune&&tutRune.slashed){
-              if(!tutSlashed){tutSlashed=true;tutStart=Date.now()}
-              gctx.font='600 18px Inter,sans-serif';
-              gctx.fillStyle='rgba(255,210,80,0.8)';
-              gctx.fillText('+5 Bonus!',GW/2,GH/2);
-              if(Date.now()-tutStart>1000){tutPhase=3;tutStart=Date.now();tutSlashed=false;
-                spawnRune('bomb',GW/2); tutRune=runes[runes.length-1]; tutRune.vy=0;tutRune.vx=0;tutRune.y=GH/2;tutRune.decay=0;
+            gctx.fillText('Slash both runes quickly for x2 multiplier!',GW/2,GH*0.18+30);
+            // Count slashed
+            var slashedNow=0;
+            for(var ri=0;ri<runes.length;ri++){if(runes[ri].slashed)slashedNow++}
+            if(slashedNow>=2&&tutComboCount===0){
+              tutComboCount=2;tutStart=Date.now();tutScore+=4;
+              gctx.font='bold 26px "Cormorant Garamond",serif';
+              gctx.fillStyle='rgba(255,210,80,0.9)';
+            }
+            if(tutComboCount>=2){
+              gctx.font='bold 26px "Cormorant Garamond",serif';
+              gctx.fillStyle='rgba(255,210,80,0.9)';
+              gctx.fillText('x2 COMBO! +4 points!',GW/2,GH/2);
+              gctx.font='13px Inter,sans-serif';
+              gctx.fillStyle='rgba(200,185,140,0.5)';
+              gctx.fillText('Score: '+tutScore,GW/2,GH/2+30);
+              if(Date.now()-tutStart>1800){
+                tutPhase=3;tutStart=Date.now();runes=[];
+                spawnRune('bomb',GW/2);runes[runes.length-1].y=GH/2;
+                tutBombHit=false;
               }
             }
-          } else if(tutPhase===3){
-            // Teach: bomb
-            gctx.font='600 16px Inter,sans-serif';
-            gctx.fillStyle='rgba(220,60,80,0.8)';
-            gctx.fillText('⚠ Red Rune = BOMB! Don\'t slash!',GW/2,GH*0.2);
-            gctx.font='13px Inter,sans-serif';
+          }
+          // --- Phase 3: Bomb warning ---
+          else if(tutPhase===3){
+            gctx.font='600 20px Inter,sans-serif';
+            gctx.fillStyle='rgba(220,60,80,0.85)';
+            gctx.fillText('Step 3: Danger!',GW/2,GH*0.18);
+            gctx.font='14px Inter,sans-serif';
             gctx.fillStyle='rgba(200,185,140,'+pulse+')';
-            gctx.fillText('Avoid it! Move your cursor away.',GW/2,GH*0.2+28);
-            if(tutRune&&!tutRune.slashed){tutRune.y=GH/2;tutRune.decay=0}
-            if(tutRune&&tutRune.slashed){
-              gctx.font='600 16px Inter,sans-serif';
-              gctx.fillStyle='rgba(220,60,60,0.8)';
-              gctx.fillText('Oops! -8 points. Avoid red ones!',GW/2,GH/2+50);
+            gctx.fillText('⚠ Red runes are BOMBS — slash it to see what happens...',GW/2,GH*0.18+30);
+            // Wait for bomb to be slashed
+            if(runes.length===0||runes[0].slashed){
+              if(!tutBombHit){tutBombHit=true;tutStart=Date.now();tutScore=Math.max(0,tutScore-8)}
+              gctx.font='bold 22px Inter,sans-serif';
+              gctx.fillStyle='rgba(220,60,60,0.9)';
+              gctx.fillText('-8 points! Avoid red runes!',GW/2,GH/2);
+              gctx.font='13px Inter,sans-serif';
+              gctx.fillStyle='rgba(200,185,140,0.5)';
+              gctx.fillText('Score: '+tutScore,GW/2,GH/2+30);
+              if(Date.now()-tutStart>2000){
+                tutPhase=5;tutStart=Date.now();runes=[];score=0;combo=0;
+              }
             }
-            // Auto advance after 3 seconds
-            if(Date.now()-tutStart>3500){tutPhase=4;tutStart=Date.now();runes=[];score=0;combo=0}
-          } else if(tutPhase===4){
-            // GO!
-            var goElapsed=(Date.now()-tutStart)/1000;
-            if(goElapsed<1.5){
-              var sc3=1+goElapsed*0.4;
-              var al2=1-goElapsed/1.5;
-              gctx.font='bold '+Math.floor(70*sc3)+'px "Cormorant Garamond",serif';
-              gctx.fillStyle='rgba(212,168,83,'+al2+')';
-              gctx.fillText('GO!',GW/2,GH/2);
-            } else {
-              tutPhase=5;startTime=Date.now();runes=[];
+            // If 5 seconds pass without slashing, also advance
+            if(!tutBombHit&&Date.now()-tutStart>5000){
+              tutPhase=5;tutStart=Date.now();runes=[];score=0;combo=0;
+            }
+          }
+          // --- Phase 5: Start button ---
+          else if(tutPhase===5){
+            gctx.font='bold 28px "Cormorant Garamond",serif';
+            gctx.fillStyle='rgba(212,168,83,0.85)';
+            gctx.fillText('Ready?',GW/2,GH/2-50);
+            gctx.font='13px Inter,sans-serif';
+            gctx.fillStyle='rgba(200,185,140,0.45)';
+            gctx.fillText('25 seconds · Slash runes · Build combos · Avoid bombs',GW/2,GH/2-15);
+            // Draw START button
+            var btnW=180,btnH=46,btnX=GW/2-btnW/2,btnY=GH/2+15;
+            var hovering=bmx>btnX&&bmx<btnX+btnW&&bmy>btnY&&bmy<btnY+btnH;
+            gctx.fillStyle=hovering?'rgba(212,168,83,0.25)':'rgba(212,168,83,0.12)';
+            gctx.strokeStyle=hovering?'rgba(212,168,83,0.7)':'rgba(212,168,83,0.4)';
+            gctx.lineWidth=1.5;
+            gctx.beginPath();gctx.roundRect(btnX,btnY,btnW,btnH,24);gctx.fill();gctx.stroke();
+            gctx.font='600 16px Inter,sans-serif';
+            gctx.fillStyle=hovering?'#d4a853':'rgba(212,168,83,0.8)';
+            gctx.fillText('⚔️  START',GW/2,btnY+btnH/2+1);
+            // Click detection handled via startBtnCheck
+            if(!window._startBtnBound){
+              window._startBtnBound=true;
+              gameOverlay.addEventListener('click',function startClick(e){
+                if(tutPhase!==5) return;
+                var cx2=e.clientX,cy2=e.clientY;
+                if(cx2>btnX&&cx2<btnX+btnW&&cy2>btnY&&cy2<btnY+btnH){
+                  tutPhase=6;tutStart=Date.now();runes=[];
+                  gameOverlay.removeEventListener('click',startClick);
+                }
+              });
+              gameOverlay.addEventListener('touchstart',function startTouch(e){
+                if(tutPhase!==5) return;
+                tutPhase=6;tutStart=Date.now();runes=[];
+                gameOverlay.removeEventListener('touchstart',startTouch);
+              },{passive:true});
+            }
+          }
+          // --- Phase 6: 3-2-1 countdown ---
+          else if(tutPhase===6){
+            var ce=(Date.now()-tutStart)/1000;
+            var cn=Math.ceil(3-ce);
+            if(cn<=0){tutPhase=7;startTime=Date.now();runes=[];score=0;combo=0;maxCombo=0;slashCount=0;missed=0}
+            else{
+              var cs=1+(ce%1)*0.3;
+              var ca=1-(ce%1);
+              gctx.font='bold '+Math.floor(80*cs)+'px "Cormorant Garamond",serif';
+              gctx.fillStyle='rgba(212,168,83,'+ca+')';
+              gctx.fillText(cn,GW/2,GH/2);
             }
           }
 
-          // Always draw cursor during tutorial
+          // Always draw cursor
           if(bmx>0){
-            var cg=gctx.createRadialGradient(bmx,bmy,0,bmx,bmy,30);
-            cg.addColorStop(0,'rgba(220,190,100,0.3)');cg.addColorStop(1,'rgba(220,190,100,0)');
-            gctx.fillStyle=cg;gctx.fillRect(bmx-30,bmy-30,60,60);
+            var cg=gctx.createRadialGradient(bmx,bmy,0,bmx,bmy,35);
+            cg.addColorStop(0,'rgba(220,190,100,'+(bladeActive?0.35:0.2)+')');cg.addColorStop(1,'rgba(220,190,100,0)');
+            gctx.fillStyle=cg;gctx.fillRect(bmx-35,bmy-35,70,70);
             gctx.beginPath();gctx.arc(bmx,bmy,3,0,Math.PI*2);
-            gctx.fillStyle='rgba(255,230,150,0.7)';gctx.fill();
+            gctx.fillStyle='rgba(255,230,150,'+(bladeActive?0.9:0.6)+')';gctx.fill();
           }
-
-          // Still draw runes & trail & explosions during tutorial
-          // (runes drawn above in main loop, trail below)
+          // Draw trail during tutorial
           if(trail.length>=2){
             var now2=Date.now();
             for(var i=1;i<trail.length;i++){
-              var p0=trail[i-1],p1=trail[i];
-              var age2=(now2-p1.t)/200;
-              var alpha2=(1-age2)*0.7;
-              var width2=(1-age2)*6+2;
+              var p0=trail[i-1],p1=trail[i];var age2=(now2-p1.t)/200;
+              var alpha2=(1-age2)*0.7;var width2=(1-age2)*6+2;
               gctx.beginPath();gctx.moveTo(p0.x,p0.y);gctx.lineTo(p1.x,p1.y);
               gctx.strokeStyle='rgba(255,220,120,'+alpha2+')';gctx.lineWidth=width2;gctx.lineCap='round';gctx.stroke();
               gctx.strokeStyle='rgba(255,200,80,'+(alpha2*0.3)+')';gctx.lineWidth=width2*3;gctx.stroke();
             }
           }
+          // Draw explosions during tutorial
           for(var i=explosions.length-1;i>=0;i--){
             var e=explosions[i];e.x+=e.vx;e.y+=e.vy;e.vx*=0.94;e.vy*=0.94;e.life-=0.025;
             if(e.life<=0){explosions.splice(i,1);continue}
             gctx.beginPath();gctx.arc(e.x,e.y,e.r,0,Math.PI*2);gctx.fillStyle=e.color+e.life+')';gctx.fill();
           }
-
           if(shakeAmount>0) gctx.restore();
           requestAnimationFrame(gameLoop);
           return;
