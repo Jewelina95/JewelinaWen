@@ -443,13 +443,18 @@ if(landingEl) initLanding(landingEl);
   // Replay button
   if(replayBtn){
     replayBtn.addEventListener('click',function(){
-      // Hide key and replay button
+      // Reset everything — like a full refresh
       keyAfter.style.opacity='0';
       replayBtn.style.display='none';
+      var l2b=document.getElementById('level2-btn');
+      if(l2b) l2b.style.display='none';
+      // Reset key state
+      keyShowing=false;
       setTimeout(function(){
         keyAfter.style.display='none';
         vid.style.display='';
         vid.style.opacity='1';
+        vid.style.transition='none';
         vid.currentTime=0;
         vid.play();
       },500);
@@ -493,21 +498,24 @@ if(landingEl) initLanding(landingEl);
   document.addEventListener('click',unmute);
   if(soundHint) soundHint.addEventListener('click',unmute);
 
+  var _keyAnimId=0; // used to stop old animation loops
   function showKey(){
     if(keyShowing) return;
     keyShowing=true;
+    _keyAnimId++; // invalidate any previous animation loop
     keyAfter.style.display='block';
     keyAfter.style.opacity='0';
     keyAfter.style.transition='opacity 1.5s ease';
     setTimeout(function(){ keyAfter.style.opacity='1'; },50);
-    startKeyAnimation();
+    startKeyAnimation(_keyAnimId);
   }
 
   // If user scrolls back up after video ended, keep key visible
   // (video stays on last frame)
 
   /* ===== Animated 3D Key with golden light ===== */
-  function startKeyAnimation(){
+  function startKeyAnimation(animId){
+    _currentAnimId=animId||0;
     var c=keyCanvas, ctx=c.getContext('2d');
     var W,H,t=0;
     var sparkles=[];
@@ -791,6 +799,9 @@ if(landingEl) initLanding(landingEl);
     // ============================================
     // LEVEL 2: LIGHT BLADE 光刃
     // ============================================
+    // Also used by startKeyAnimation
+    var _currentAnimId=0;
+
     function startLightChaser(){
       var gameOverlay=document.createElement('div');
       gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;cursor:none;touch-action:none;overflow:hidden';
@@ -1537,6 +1548,8 @@ if(landingEl) initLanding(landingEl);
     window.addEventListener('resize',sz); sz();
 
     function draw(){
+      // Stop if a newer animation has started
+      if(_currentAnimId!==animId) return;
       t+=0.01;
       // Dark background
       ctx.fillStyle='#050608';
