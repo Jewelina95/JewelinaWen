@@ -727,7 +727,7 @@ if(landingEl) initLanding(landingEl);
       closeBtn.onclick=function(){
         card.style.transform='scale(0.9) translateY(10px)';card.style.opacity='0';
         overlay.style.background='rgba(0,0,0,0)';
-        setTimeout(function(){ overlay.remove(); },600);
+        setTimeout(function(){ overlay.remove(); showLevel2Prompt(); },600);
       };
       // Level 2 button
       var l2Btn=document.getElementById('fortune-level2');
@@ -741,6 +741,38 @@ if(landingEl) initLanding(landingEl);
         };
       }
       overlay.addEventListener('click',function(e){ if(e.target===overlay) closeBtn.click(); });
+    }
+
+    // ============================================
+    // LEVEL 2 PROMPT - Ask user after fortune closes
+    // ============================================
+    function showLevel2Prompt(){
+      var pov=document.createElement('div');
+      pov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .6s';
+      var pcd=document.createElement('div');
+      pcd.style.cssText='max-width:380px;width:88%;padding:32px 28px;background:rgba(12,10,6,.96);border:1px solid rgba(212,168,83,.3);border-radius:18px;text-align:center;transform:scale(.85);opacity:0;transition:all .7s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 20px 60px rgba(0,0,0,.5)';
+      pcd.innerHTML='<div style="font-size:2rem;margin-bottom:10px">⚡</div>'
+        +'<div style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:#d4a853;margin-bottom:8px;font-weight:500">Ready for Level 2?</div>'
+        +'<div style="font-size:.85rem;color:rgba(245,240,235,.6);line-height:1.6;margin-bottom:6px">追光者 · Light Chaser</div>'
+        +'<div style="font-size:.78rem;color:rgba(245,240,235,.4);line-height:1.6;margin-bottom:20px">20 seconds to catch golden orbs.<br>Build combos. Avoid the dark ones.<br>Discover your spiritual power level!</div>'
+        +'<div style="display:flex;gap:12px;justify-content:center">'
+        +'<button id="l2-yes" style="padding:10px 28px;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.5);border-radius:22px;color:#d4a853;font-family:Inter,sans-serif;font-size:.8rem;cursor:pointer;transition:all .3s;font-weight:600;letter-spacing:.05em">Let\'s Go!</button>'
+        +'<button id="l2-no" style="padding:10px 28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:22px;color:rgba(245,240,235,.5);font-family:Inter,sans-serif;font-size:.8rem;cursor:pointer;transition:all .3s;letter-spacing:.05em">Skip</button>'
+        +'</div>';
+      pov.appendChild(pcd);
+      document.body.appendChild(pov);
+      setTimeout(function(){
+        pov.style.background='rgba(0,0,0,.6)';
+        pcd.style.transform='scale(1)';pcd.style.opacity='1';
+      },50);
+      function closePrompt(cb){
+        pcd.style.transform='scale(.9)';pcd.style.opacity='0';
+        pov.style.background='rgba(0,0,0,0)';
+        setTimeout(function(){pov.remove();if(cb)cb();},500);
+      }
+      document.getElementById('l2-yes').onclick=function(){closePrompt(startLightChaser)};
+      document.getElementById('l2-no').onclick=function(){closePrompt()};
+      pov.addEventListener('click',function(e){if(e.target===pov)closePrompt()});
     }
 
     // ============================================
