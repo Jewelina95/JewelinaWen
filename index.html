@@ -1061,16 +1061,33 @@ if(landingEl) initLanding(landingEl);
         }
       }
 
-      // === Hint text ===
-      if(hintAlpha>0.01&&!allConnected){
-        ctx.font='600 18px Inter,sans-serif';
+      // === Hint text with pulse animation ===
+      if(!allConnected){
+        var hintPulse=0.5+Math.sin(t*2.5)*0.3;
+        // Main hint - large and obvious
+        ctx.font='600 22px Inter,sans-serif';
         ctx.textAlign='center';
-        ctx.fillStyle='rgba(212,180,120,'+(hintAlpha*0.7)+')';
-        ctx.fillText('Click the symbols to unlock the key',W/2,H*0.87);
-        ctx.font='13px Inter,sans-serif';
-        ctx.fillStyle='rgba(200,185,140,'+(hintAlpha*0.4)+')';
-        ctx.fillText('Discover your fortune today',W/2,H*0.9);
-        hintAlpha*=0.998;
+        ctx.fillStyle='rgba(212,180,120,'+(hintPulse*0.85)+')';
+        ctx.fillText('✦ Tap the 8 symbols around the key ✦',W/2,H*0.85);
+        // Sub hint
+        ctx.font='14px "Cormorant Garamond",serif';
+        ctx.fillStyle='rgba(200,185,140,'+(hintPulse*0.5)+')';
+        ctx.fillText('Connect them all to unlock your fortune',W/2,H*0.885);
+        // Arrows pointing to nearest inactive node
+        if(activatedCount===0){
+          for(var ni=0;ni<nodes.length;ni++){
+            var n=nodes[ni];
+            if(n.active) continue;
+            var arrowPulse=0.15+Math.sin(t*3+ni)*0.1;
+            ctx.beginPath();
+            ctx.arc(n.x,n.y,22+Math.sin(t*2.5+ni)*4,0,Math.PI*2);
+            ctx.strokeStyle='rgba(212,180,120,'+arrowPulse+')';
+            ctx.lineWidth=1;
+            ctx.setLineDash([4,4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+        }
       }
 
       // === ALL CONNECTED BURST ===
