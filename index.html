@@ -481,12 +481,24 @@ if(landingEl) initLanding(landingEl);
   vid.currentTime=0;
   var playPromise=vid.play();
   if(playPromise) playPromise.catch(function(){
-    // Autoplay blocked - wait for user click
-    document.addEventListener('click',function once(){
-      vid.play();
-      document.removeEventListener('click',once);
-    });
+    // Autoplay blocked — show key directly as fallback
+    vid.style.display='none';
+    showKey();
+    if(replayBtn) replayBtn.style.display='block';
+    var l2b=document.getElementById('level2-btn');
+    if(l2b){ l2b.style.display='block'; l2b.onclick=function(){ startLightChaser(); }; }
   });
+
+  // Safety: if video stalls for 15s without ending, show key anyway
+  setTimeout(function(){
+    if(!keyShowing&&vid.paused&&vid.currentTime<1){
+      vid.style.display='none';
+      showKey();
+      if(replayBtn) replayBtn.style.display='block';
+      var l2b=document.getElementById('level2-btn');
+      if(l2b){ l2b.style.display='block'; l2b.onclick=function(){ startLightChaser(); }; }
+    }
+  },15000);
 
   // Click anywhere to unmute
   function unmute(){
