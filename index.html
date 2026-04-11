@@ -913,7 +913,7 @@ if(landingEl) initLanding(landingEl);
       // Mouse/touch handlers
       function onMove(x,y){
         bmx=x;bmy=y;
-        if(bladeActive&&!gameOver&&tutPhase>=7){
+        if(bladeActive&&!gameOver){
           trail.push({x:x,y:y,t:Date.now()});
           if(trail.length>40) trail.shift();
           checkSlash();
@@ -1106,6 +1106,45 @@ if(landingEl) initLanding(landingEl);
               gctx.fillStyle='rgba(212,168,83,'+ca+')';
               gctx.fillText(cn,GW/2,GH/2);
             }
+          }
+
+          // Draw runes during tutorial
+          for(var i=runes.length-1;i>=0;i--){
+            var r=runes[i];
+            if(r.slashed){runes.splice(i,1);continue}
+            r.rotation+=r.rotSpeed;
+            gctx.save();
+            gctx.translate(r.x,r.y);
+            gctx.rotate(r.rotation);
+            var glowR2=r.r*2.5;
+            var glow2=gctx.createRadialGradient(0,0,0,0,0,glowR2);
+            if(r.type==='bomb'){
+              glow2.addColorStop(0,'rgba(140,30,50,0.25)');glow2.addColorStop(1,'rgba(100,10,30,0)');
+            } else if(r.type==='golden'){
+              glow2.addColorStop(0,'rgba(255,210,80,0.25)');glow2.addColorStop(1,'rgba(255,180,50,0)');
+            } else {
+              glow2.addColorStop(0,'rgba(200,170,100,0.15)');glow2.addColorStop(1,'rgba(180,150,80,0)');
+            }
+            gctx.fillStyle=glow2;
+            gctx.fillRect(-glowR2,-glowR2,glowR2*2,glowR2*2);
+            gctx.beginPath();gctx.arc(0,0,r.r,0,Math.PI*2);
+            if(r.type==='bomb'){gctx.fillStyle='rgba(100,15,30,0.6)';gctx.strokeStyle='rgba(180,40,60,0.5)'}
+            else if(r.type==='golden'){gctx.fillStyle='rgba(60,45,15,0.6)';gctx.strokeStyle='rgba(255,210,80,0.6)'}
+            else{gctx.fillStyle='rgba(30,25,15,0.5)';gctx.strokeStyle='rgba(200,170,100,0.35)'}
+            gctx.lineWidth=2;gctx.fill();gctx.stroke();
+            gctx.font='bold '+Math.floor(r.r*0.85)+'px serif';
+            gctx.textAlign='center';gctx.textBaseline='middle';
+            if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.8)';
+            else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.9)';
+            else gctx.fillStyle='rgba(220,190,120,0.7)';
+            gctx.fillText(r.char,0,-2);
+            gctx.font=Math.floor(r.r*0.3)+'px Inter,sans-serif';
+            if(r.type==='bomb') gctx.fillStyle='rgba(220,60,80,0.45)';
+            else if(r.type==='golden') gctx.fillStyle='rgba(255,220,100,0.5)';
+            else gctx.fillStyle='rgba(200,175,110,0.4)';
+            gctx.fillText(r.charEn||'',0,r.r*0.45);
+            if(r.type==='bomb'){gctx.font='10px sans-serif';gctx.fillStyle='rgba(220,60,80,0.5)';gctx.fillText('⚠',0,-r.r-8)}
+            gctx.restore();
           }
 
           // Always draw cursor
