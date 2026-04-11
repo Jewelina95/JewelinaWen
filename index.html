@@ -810,6 +810,7 @@ if(landingEl) initLanding(landingEl);
       var missed=0;
       var shakeAmount=0;
       var gameOver=false;
+      var redFlash=0; // red flash intensity when hitting bomb
 
       // Tutorial: 0=title, 1=single slash, 2=combo(2 runes), 3=bomb warning, 4=bomb slash, 5=start btn, 6=countdown, 7=playing
       var tutPhase=0;
@@ -838,11 +839,15 @@ if(landingEl) initLanding(landingEl);
       ];
 
       var energyLevels=[
-        {min:0,level:'初窥门径 · Novice Seeker',cn:'你的灵觉正在觉醒，光之旅才刚刚开始。保持好奇心，宇宙的奥秘将向你敞开。',en:'Your spiritual awareness is just awakening. Stay curious — the mysteries of the universe are opening to you.'},
-        {min:20,level:'光之学徒 · Light Apprentice',cn:'你已能感知微光的流动。直觉在增长，内在的指引正变得清晰。',en:'You can sense the flow of subtle light. Your intuition grows stronger — inner guidance becomes clearer.'},
-        {min:40,level:'灵能行者 · Energy Walker',cn:'你的能量场稳定而明亮。你有能力在混沌中找到秩序，在黑暗中看见光明。',en:'Your energy field is stable and bright. You can find order in chaos and light in darkness.'},
-        {min:70,level:'金光大师 · Golden Master',cn:'惊人的灵力！你与宇宙能量的共振已达到极高频率。你的直觉近乎超自然。',en:'Astonishing spiritual power! Your resonance with universal energy has reached extraordinary frequencies.'},
-        {min:100,level:'天人合一 · One with the Cosmos',cn:'传说级的存在！你已超越凡尘，达到天人合一的境界。光与影在你手中如臂使指。',en:'A legendary being! You have transcended the mundane. Light and shadow bend to your will.'}
+        {min:0,level:'练气期 · Qi Gathering',cn:'你刚踏入修行之路，灵根初现。勤加修炼，前路无量。',en:'You have just stepped onto the path of cultivation. Your spiritual root has awakened — keep practicing.'},
+        {min:15,level:'筑基期 · Foundation Building',cn:'根基已稳，灵力渐生。你开始感应天地间流动的能量。',en:'Your foundation is set. You begin to sense the flow of energy between heaven and earth.'},
+        {min:35,level:'金丹期 · Golden Core',cn:'金丹已成！你的丹田中凝聚着璀璨的灵力，已远超凡人。',en:'The Golden Core has formed! Brilliant spiritual energy condenses within you, far surpassing mortals.'},
+        {min:60,level:'元婴期 · Nascent Soul',cn:'元婴出窍！你已能神游太虚，洞察万物本源。修仙界的翘楚！',en:'Your Nascent Soul emerges! You can traverse the void and perceive the origin of all things. An elite among cultivators!'},
+        {min:100,level:'化神期 · Spirit Transformation',cn:'化神大成！天地法则在你眼中如掌纹般清晰。你已是一方强者。',en:'Spirit Transformation complete! The laws of heaven and earth are as clear as lines on your palm. You are a true powerhouse.'},
+        {min:180,level:'大乘期 · Mahayana',cn:'大乘圆满！距飞升仅一步之遥，三界之内鲜有敌手。',en:'Mahayana perfection! One step from ascension — few in the three realms can match your power.'},
+        {min:300,level:'渡劫期 · Tribulation Crossing',cn:'天劫降临也无法阻挡你！你正在经历最终的考验，超脱轮回就在眼前。',en:'Even heavenly tribulation cannot stop you! You face the final trial — transcendence beyond reincarnation awaits.'},
+        {min:500,level:'准圣 · Quasi-Sage',cn:'准圣之境！你已半步踏入圣人之列，万法归一，道心通明。',en:'Quasi-Sage realm! You stand half a step among the saints. All dharmas converge to one, your Dao heart shines clear.'},
+        {min:800,level:'天人合一 · One with the Cosmos',cn:'天人合一！传说中的至高境界，万物与你同呼吸，宇宙因你而完整。你就是道本身。',en:'Unity of Heaven and Human! The legendary supreme realm. All things breathe with you, the universe is whole because of you. You ARE the Tao itself.'}
       ];
 
       function spawnRune(forceType,forceX){
@@ -891,11 +896,9 @@ if(landingEl) initLanding(landingEl);
             if(r.type==='bomb'){
               score=Math.max(0,score-8);
               combo=0;
-              shakeAmount=12;
-              addExplosion(r.x,r.y,'rgba(140,30,30,',15);
-              // Flash red
-              gctx.fillStyle='rgba(180,30,30,0.15)';
-              gctx.fillRect(0,0,GW,GH);
+              shakeAmount=15;
+              redFlash=1;
+              addExplosion(r.x,r.y,'rgba(200,40,40,',20);
             } else {
               combo++;
               if(combo>maxCombo) maxCombo=combo;
@@ -1348,6 +1351,19 @@ if(landingEl) initLanding(landingEl);
           gctx.beginPath();gctx.arc(bmx,bmy,3,0,Math.PI*2);
           gctx.fillStyle='rgba(255,230,150,'+(bladeActive?0.9:0.5)+')';
           gctx.fill();
+        }
+
+        // === RED FLASH (bomb hit) ===
+        if(redFlash>0.01){
+          gctx.fillStyle='rgba(180,20,20,'+redFlash*0.25+')';
+          gctx.fillRect(0,0,GW,GH);
+          // Red vignette
+          var rvg=gctx.createRadialGradient(GW/2,GH/2,GW*0.2,GW/2,GH/2,GW*0.6);
+          rvg.addColorStop(0,'rgba(0,0,0,0)');
+          rvg.addColorStop(1,'rgba(150,10,10,'+redFlash*0.3+')');
+          gctx.fillStyle=rvg;
+          gctx.fillRect(0,0,GW,GH);
+          redFlash*=0.92;
         }
 
         // === HUD ===
