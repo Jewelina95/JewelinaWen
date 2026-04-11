@@ -162,6 +162,7 @@ footer{padding:32px 44px;border-top:1px solid rgba(255,255,255,.05);background:#
   #key-reflect{width:100px;height:260px}
   .lt-main{font-size:1.8rem}
   .lt-sub{font-size:.7rem}
+  #lt{bottom:18%!important}
   #lt{bottom:14%;left:6%}
   #scroll-cue{right:18px;bottom:18px;font-size:.6rem}
   .ab-wrap{flex-direction:column;padding:90px 22px 30px;gap:24px;align-items:center}
@@ -183,6 +184,7 @@ footer{padding:32px 44px;border-top:1px solid rgba(255,255,255,.05);background:#
 }
 @media(max-width:380px){
   .lt-main{font-size:1.4rem}
+  #lt{bottom:20%!important}
   .key-3d{width:80px;height:210px}
   #key-reflect{width:80px;height:210px}
   .ab-photo img{width:150px;height:auto}
@@ -261,7 +263,7 @@ footer{padding:32px 44px;border-top:1px solid rgba(255,255,255,.05);background:#
       <div class="bio">
         <p>I am a first-year PhD researcher at the <strong><a href="https://www.imperial.ac.uk/hamlyn-centre/" target="_blank">Hamlyn Centre</a></strong>, <strong>Imperial College London</strong>, advised by <a href="https://www.imperial.ac.uk/human-robotics" target="_blank">Prof. Etienne Burdet</a> and <a href="https://profiles.imperial.ac.uk/liyun.ma" target="_blank">Prof. Liyun Ma</a>. I am also a research member of <strong><a href="https://growing-ai-like-a-child.github.io/" target="_blank">GrowAI</a></strong>.</p>
         <p>I completed my Master's degree <em>(GPA 3.97)</em> at <strong>New York University</strong>, guided by <a href="https://ctsilva.github.io/" target="_blank">Prof. Claudio Silva</a> and <a href="https://steinhardt.nyu.edu/people/w-russell-neuman" target="_blank">Prof. W. Russell Neuman</a>. Prior to that, I received my BEng with <strong>First Class Honours (Top 10%)</strong> from the <strong>University of Liverpool</strong>, advised by <a href="https://facultyprofiles.hkust-gz.edu.cn/faculty-personal-page?id=437" target="_blank">Prof. Hai-Ning Liang</a>, now at HKUST(GZ).</p>
-        <p>My research lies at the intersection of <strong>artificial intelligence</strong> and <strong>human-centred computing</strong>, with a focus on <strong>video reasoning</strong>, <strong>brain-inspired cognition</strong>, <strong>adaptive interaction</strong>, and <strong>embodied healthcare systems</strong>.</p>
+        <p>My research navigates the frontier where <strong>machine intelligence meets human experience</strong> &mdash; with a focus on <strong>video reasoning</strong>, <strong>brain-inspired cognition</strong>, <strong>adaptive interaction</strong>, and <strong>embodied healthcare systems</strong>.</p>
         <p>I have been incredibly fortunate to learn from and work alongside exceptional mentors whose guidance has profoundly shaped my academic journey. I am currently exploring <strong>brain-inspired AI</strong> with <a href="https://jason-ding.com/" target="_blank">Zijian Ding</a> at UMD. Previously, I was a Research Assistant at the <strong><a href="https://vida.engineering.nyu.edu/" target="_blank">NYU VIDA Lab</a></strong>, contributing to the <strong>DARPA Perceptually-enabled Task Guidance (PTG)</strong> project under <a href="https://ctsilva.github.io/" target="_blank">Prof. Claudio Silva</a> and <a href="https://www.jingq.org/" target="_blank">Prof. Jing Qian</a>. I have also had the privilege of working with <a href="https://rochester-bear-lab.github.io/" target="_blank">Prof. Yukang Yan</a> (University of Rochester) and <a href="https://orsonxu.com/" target="_blank">Prof. Xuhai Xu</a> (Columbia University) on <strong>adaptive systems</strong> and <strong>reinforcement learning</strong> &mdash; both truly inspiring professors! My research journey began with <a href="https://xuwenge.github.io/" target="_blank">Prof. Wenge Xu</a> at Birmingham City University, where I first discovered my passion for <strong>VR/AR</strong> and human-centred design.</p>
       </div>
     </div>
@@ -791,7 +793,10 @@ if(landingEl) initLanding(landingEl);
     // ============================================
     function startLightChaser(){
       var gameOverlay=document.createElement('div');
-      gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;cursor:none';
+      gameOverlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030508;cursor:none;touch-action:none;overflow:hidden';
+      // Prevent page scroll during game
+      document.body.style.overflow='hidden';
+      var _restoreScroll=function(){document.body.style.overflow=''};
       var gameCanvas=document.createElement('canvas');
       gameCanvas.style.cssText='width:100%;height:100%;display:block;';
       gameOverlay.appendChild(gameCanvas);
@@ -928,9 +933,9 @@ if(landingEl) initLanding(landingEl);
       gameOverlay.addEventListener('mousedown',function(e){onDown(e.clientX,e.clientY)});
       gameOverlay.addEventListener('mousemove',function(e){onMove(e.clientX,e.clientY)});
       gameOverlay.addEventListener('mouseup',onUp);
-      gameOverlay.addEventListener('touchstart',function(e){var t=e.touches[0];onDown(t.clientX,t.clientY)},{passive:true});
-      gameOverlay.addEventListener('touchmove',function(e){var t=e.touches[0];onMove(t.clientX,t.clientY)},{passive:true});
-      gameOverlay.addEventListener('touchend',onUp,{passive:true});
+      gameOverlay.addEventListener('touchstart',function(e){e.preventDefault();var t=e.touches[0];onDown(t.clientX,t.clientY)},{passive:false});
+      gameOverlay.addEventListener('touchmove',function(e){e.preventDefault();var t=e.touches[0];onMove(t.clientX,t.clientY)},{passive:false});
+      gameOverlay.addEventListener('touchend',function(e){e.preventDefault();onUp()},{passive:false});
 
       var gt=0;
       var spawnTimer=0;
@@ -1409,7 +1414,7 @@ if(landingEl) initLanding(landingEl);
         gameOverlay.style.transition='opacity 0.8s';
         gameOverlay.style.opacity='0';
         setTimeout(function(){
-          gameOverlay.remove();
+          gameOverlay.remove();_restoreScroll();
           var ov=document.createElement('div');
           ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .6s;overflow-y:auto;padding:20px';
           var cd=document.createElement('div');
