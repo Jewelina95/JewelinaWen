@@ -1716,6 +1716,9 @@ if(landingEl) initLanding(landingEl);
         if(!fortuneShown&&(t-burstTime)>2){
           fortuneShown=true;
           showFortunePopup();
+          // Show Light Blade button on main page
+          var l2b=document.getElementById('level2-btn');
+          if(l2b){l2b.style.display='block'}
         }
       }
 
