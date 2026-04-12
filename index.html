@@ -445,6 +445,7 @@ if(landingEl) initLanding(landingEl);
     replayBtn.addEventListener('click',function(){
       // Reset everything — like a full refresh
       stopKeyAnim();
+      vidEnded=false;
       keyAfter.style.opacity='0';
       replayBtn.style.display='none';
       var l2b=document.getElementById('level2-btn');
@@ -461,8 +462,18 @@ if(landingEl) initLanding(landingEl);
     });
   }
 
+  // Cut 2s from end — trigger early
+  var vidEnded=false;
+  vid.addEventListener('timeupdate',function(){
+    if(!vidEnded&&vid.duration&&vid.currentTime>=vid.duration-2){
+      vidEnded=true;
+      vid.dispatchEvent(new Event('ended'));
+    }
+  });
+
   // When video ends: freeze last frame, show animated key on top
   vid.addEventListener('ended',function(){
+    if(!vidEnded){vidEnded=true;} // mark if native ended fires
     if(soundHint) soundHint.style.display='none';
     // Fade out video, show key on black background
     vid.style.transition='opacity 1.5s ease';
