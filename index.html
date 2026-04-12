@@ -544,13 +544,63 @@ if(landingEl) initLanding(landingEl);
     var baguaSymbols=['☰','☱','☲','☳','☴','☵','☶','☷'];
     var baguaNames=['Heaven','Lake','Fire','Thunder','Wind','Water','Mountain','Earth'];
 
-    // Hint text
     var hintAlpha=1;
     var fortuneShown=false;
 
+    // Wisdom quotes from world scriptures
+    var wisdoms=[
+      {cn:'上善若水，水善利万物而不争。',en:'The highest goodness is like water — it benefits all things without competing.',src:'道德经 Tao Te Ching'},
+      {cn:'千里之行，始于足下。',en:'A journey of a thousand miles begins with a single step.',src:'道德经 Tao Te Ching'},
+      {cn:'知人者智，自知者明。',en:'Knowing others is intelligence; knowing yourself is true wisdom.',src:'道德经 Tao Te Ching'},
+      {cn:'大器晚成，大音希声，大象无形。',en:'Great vessels take long to complete. Great sounds are silent. Great forms are shapeless.',src:'道德经 Tao Te Ching'},
+      {cn:'道生一，一生二，二生三，三生万物。',en:'The Tao gives birth to one, one to two, two to three, three to all things.',src:'道德经 Tao Te Ching'},
+      {cn:'一切有为法，如梦幻泡影，如露亦如电，应作如是观。',en:'All conditioned phenomena are like dreams, illusions, bubbles, shadows — like dew and lightning.',src:'金刚经 Diamond Sutra'},
+      {cn:'应无所住而生其心。',en:'Let your mind arise without attaching to anything.',src:'金刚经 Diamond Sutra'},
+      {cn:'凡所有相，皆是虚妄。',en:'All appearances are illusory.',src:'金刚经 Diamond Sutra'},
+      {cn:'你们要先求他的国和他的义，这一切都要加给你们了。',en:'Seek first his kingdom and his righteousness, and all these things will be given to you.',src:'Matthew 6:33 马太福音'},
+      {cn:'那等候耶和华的，必重新得力，如鹰展翅上腾。',en:'Those who wait upon the Lord shall renew their strength, mounting up with wings like eagles.',src:'Isaiah 40:31 以赛亚书'},
+      {cn:'万事都互相效力，叫爱神的人得益处。',en:'In all things God works for the good of those who love him.',src:'Romans 8:28 罗马书'},
+      {cn:'我就是道路、真理、生命。',en:'I am the way, the truth, and the life.',src:'John 14:6 约翰福音'},
+      {cn:'狂心若歇，歇即菩提。',en:'When the restless mind comes to rest, that very resting is enlightenment.',src:'楞严经 Shurangama Sutra'},
+      {cn:'色不异空，空不异色；色即是空，空即是色。',en:'Form is emptiness, emptiness is form.',src:'心经 Heart Sutra'},
+      {cn:'心无挂碍，无挂碍故，无有恐怖，远离颠倒梦想。',en:'With no attachment, there is no fear — far beyond all inverted views, one reaches nirvana.',src:'心经 Heart Sutra'},
+      {cn:'真主不会给一个灵魂超出其能力的负担。',en:'God does not burden a soul beyond that it can bear.',src:'Quran 2:286 古兰经'},
+      {cn:'困难之后必有容易。',en:'With hardship comes ease.',src:'Quran 94:6 古兰经'},
+      {cn:'你有权行动，但无权享受行动的果实。',en:'You have the right to act, but never to the fruits of your actions.',src:'Bhagavad Gita 薄伽梵歌'},
+      {cn:'己所不欲，勿施于人。',en:'Do not do unto others what you would not have them do unto you.',src:'论语 Analects'},
+      {cn:'学而不思则罔，思而不学则殆。',en:'Learning without thought is labor lost; thought without learning is perilous.',src:'论语 Analects'},
+      {cn:'不是风动，不是幡动，仁者心动。',en:'It is not the wind that moves, nor the flag — it is your mind.',src:'六祖坛经 Platform Sutra'},
+      {cn:'春有百花秋有月，夏有凉风冬有雪。若无闲事挂心头，便是人间好时节。',en:'Spring flowers, autumn moon, summer breeze, winter snow — if your mind is free, every season is good.',src:'无门关 Gateless Gate'},
+      {cn:'归元性无二，方便有多门。',en:'The nature of returning to the source is not dual — there are many skillful means.',src:'楞严经 Shurangama Sutra'},
+      {cn:'当一个人的心灵平静时，智慧便会自然而至。',en:'When the mind is still, wisdom arises naturally.',src:'Bhagavad Gita 薄伽梵歌'},
+    ];
+
     // ============================================
-    // DIVINATION SYSTEM 玄学运势系统
-    // I Ching hexagram + Five Elements + Scripture
+    // TODAY'S WISDOM - Simple scripture quote
+    // ============================================
+    function showFortunePopup(){
+      var w=wisdoms[Math.floor(Math.random()*wisdoms.length)];
+      var ov=document.createElement('div');
+      ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .8s;padding:20px';
+      var cd=document.createElement('div');
+      cd.style.cssText='max-width:420px;width:92%;padding:36px 30px;background:rgba(12,10,6,.96);border:1px solid rgba(212,168,83,.3);border-radius:20px;text-align:center;transform:scale(.85);opacity:0;transition:all .8s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.6)';
+      cd.innerHTML='<div style="font-size:2rem;margin-bottom:10px">✦</div>'
+        +'<div style="font-size:.62rem;color:rgba(212,168,83,.4);letter-spacing:.2em;margin-bottom:16px">TODAY\'S WISDOM · 今日启示</div>'
+        +'<div style="font-size:1.1rem;line-height:1.9;color:rgba(245,240,235,.85);margin-bottom:10px">「'+w.cn+'」</div>'
+        +'<div style="font-size:.85rem;line-height:1.7;color:rgba(245,240,235,.5);font-style:italic;margin-bottom:14px">'+w.en+'</div>'
+        +'<div style="font-size:.6rem;color:rgba(212,168,83,.3);margin-bottom:22px">— '+w.src+'</div>'
+        +'<button id="fortune-close" style="padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
+      ov.appendChild(cd);document.body.appendChild(ov);
+      setTimeout(function(){ov.style.background='rgba(0,0,0,.6)';cd.style.transform='scale(1)';cd.style.opacity='1'},50);
+      var cb=document.getElementById('fortune-close');
+      cb.onmouseover=function(){this.style.borderColor='rgba(212,168,83,.7)';this.style.color='#d4a853'};
+      cb.onmouseout=function(){this.style.borderColor='rgba(212,168,83,.35)';this.style.color='rgba(245,240,235,.75)'};
+      cb.onclick=function(){cd.style.transform='scale(.9)';cd.style.opacity='0';ov.style.background='rgba(0,0,0,0)';setTimeout(function(){ov.remove()},600)};
+      ov.addEventListener('click',function(e){if(e.target===ov)cb.click()});
+    }
+
+    // OLD DIVINATION REMOVED
+    if(false){
     // ============================================
 
     // 天干地支 Heavenly Stems & Earthly Branches
@@ -774,7 +824,7 @@ if(landingEl) initLanding(landingEl);
         };
       }
       overlay.addEventListener('click',function(e){ if(e.target===overlay) closeBtn.click(); });
-    }
+    } // end of REMOVED block
 
     // ============================================
     // LEVEL 2 PROMPT - Ask user after fortune closes
