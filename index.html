@@ -600,13 +600,20 @@ if(landingEl) initLanding(landingEl);
         +'<div style="font-size:1.1rem;line-height:1.9;color:rgba(245,240,235,.85);margin-bottom:10px">「'+w.cn+'」</div>'
         +'<div style="font-size:.85rem;line-height:1.7;color:rgba(245,240,235,.5);font-style:italic;margin-bottom:14px">'+w.en+'</div>'
         +'<div style="font-size:.6rem;color:rgba(212,168,83,.3);margin-bottom:22px">— '+w.src+'</div>'
-        +'<button id="fortune-close" style="padding:10px 32px;background:rgba(212,168,83,.12);border:1px solid rgba(212,168,83,.35);border-radius:24px;color:rgba(245,240,235,.75);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter Jewelina\'s World ✦</button>';
+        +'<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'
+        +'<button id="fortune-game" style="padding:10px 28px;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.5);border-radius:24px;color:#d4a853;font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase;font-weight:600">⚔️ Light Blade</button>'
+        +'<button id="fortune-close" style="padding:10px 28px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:24px;color:rgba(245,240,235,.6);font-family:Inter,sans-serif;font-size:.78rem;letter-spacing:.1em;cursor:pointer;transition:all .3s;text-transform:uppercase">Enter World →</button>'
+        +'</div>';
       ov.appendChild(cd);document.body.appendChild(ov);
       setTimeout(function(){ov.style.background='rgba(0,0,0,.6)';cd.style.transform='scale(1)';cd.style.opacity='1'},50);
       var cb=document.getElementById('fortune-close');
-      cb.onmouseover=function(){this.style.borderColor='rgba(212,168,83,.7)';this.style.color='#d4a853'};
-      cb.onmouseout=function(){this.style.borderColor='rgba(212,168,83,.35)';this.style.color='rgba(245,240,235,.75)'};
+      cb.onmouseover=function(){this.style.borderColor='rgba(255,255,255,.3)';this.style.color='rgba(245,240,235,.85)'};
+      cb.onmouseout=function(){this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(245,240,235,.6)'};
       cb.onclick=function(){cd.style.transform='scale(.9)';cd.style.opacity='0';ov.style.background='rgba(0,0,0,0)';setTimeout(function(){ov.remove()},600)};
+      var gb=document.getElementById('fortune-game');
+      gb.onmouseover=function(){this.style.background='rgba(212,168,83,.35)'};
+      gb.onmouseout=function(){this.style.background='rgba(212,168,83,.2)'};
+      gb.onclick=function(){cd.style.transform='scale(.9)';cd.style.opacity='0';ov.style.background='rgba(0,0,0,0)';setTimeout(function(){ov.remove();startLightChaser()},500)};
       ov.addEventListener('click',function(e){if(e.target===ov)cb.click()});
     }
 
